@@ -27,6 +27,10 @@ $app->after(function (Request $request, Response $response) {
     if($response instanceof App\Rest\Response){
         if ($response->isError()){
             $response->setContent($response->getErrorMessage());
+        } else {
+            $writer = new App\Rest\Response\Writer\Json();
+            $response->setContent($writer->setData($response->getData())->output());
+            $response->headers->add($writer->getHeaders());
         }
     }
 

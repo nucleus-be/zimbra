@@ -34,7 +34,10 @@ class Nug implements ControllerProviderInterface
             } elseif($domain_id < 20) {
                 throw new Rest\Exception\AccessDenied();
             } else {
-                return new Rest\Response("Here is some general information about domain with id " . $domain_id);
+                return new Rest\Response(array(
+                    'domain_id' => $domain_id,
+                    'name'      => 'Test domain'
+                ));
             }
         });
 
