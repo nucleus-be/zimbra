@@ -7,15 +7,30 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     public $error = false;
     public $errorMessage;
 
-    public function setData($key, $value)
+    public function __construct($content = '', $status = 200, $headers = array())
+    {
+        if(is_array($content)){
+            $this->setData($content);
+            $content = "Application data";
+        }
+        parent::__construct($content, $status, $headers);
+    }
+
+    public function setData(array $value)
+    {
+        $this->data = $value;
+        return $this;
+    }
+
+    public function addData($key, $value)
     {
         $this->data[$key] = $value;
         return $this;
     }
 
-    public function getData($key)
+    public function getData()
     {
-        return $this->data[$key] ?: null;
+        return $this->data;
     }
 
     public function setError($statusCode)
