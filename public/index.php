@@ -11,30 +11,34 @@ require_once APP_ROOT.'/lib/silex.phar';
 // Create the Silex Application
 $app = new Application();
 $app['debug'] = true;
+
+// Register the App namespace to the autoloader
 $app['autoloader']->registerNamespace('App', APP_ROOT.'/lib');
 
-// Handle exceptions
+// Handle errors
 $app->error(function (\Exception $e, $code) {
     return ExceptionProcessor::process($e);
 });
 
-// Mount controllers
-$app->mount('/nug', new App\Controller\Nug());
-
-// Filters
+// After filter to create the response based on the requested format (default = json)
 $app->after(function (Request $request, Response $response) {
-
     if($response instanceof App\Rest\Response){
+        $format = $request->query->get('format', 'json');
+        $writer = App\Rest\Response\Writer::factory($format);
+        $response->headers->add($writer->getHeaders());
         if ($response->isError()){
-            $response->setContent($response->getErrorMessage());
+            $response->setContent($writer->setData(array(
+                'error' => true,
+                'message' => $response->getErrorMessage()
+            ))->output());
         } else {
-            $writer = new App\Rest\Response\Writer\Json();
             $response->setContent($writer->setData($response->getData())->output());
-            $response->headers->add($writer->getHeaders());
         }
     }
-
 });
+
+// Mount controllers
+$app->mount('/nug', new App\Controller\Nug());
 
 // Run the application
 $app->run();
