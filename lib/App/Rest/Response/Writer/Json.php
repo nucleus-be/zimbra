@@ -4,28 +4,10 @@ use App\Rest\Response\Writer;
 
 class Json extends Writer implements WriterInterface
 {
-    public $data;
-
-    public $headers = array('Content-Type' => 'application/json');
-
-    public function setData($data)
-    {
-        $this->data = $data;
-        return $this;
-    }
-
-    public function getData()
-    {
-        return $this->data;
-    }
+    protected $headers = array('Content-Type' => 'application/json');
 
     public function output()
     {
         return json_encode($this->data);
-    }
-
-    public function getHeaders()
-    {
-        return $this->headers;
     }
 }
