@@ -27,8 +27,6 @@ class Writer
     public static function factory($format = 'json')
     {
         switch(strtolower($format)){
-            case 'xml':
-                return new Writer\Xml();
             case 'json':
             default:
                 return new Writer\Json();
