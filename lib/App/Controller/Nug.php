@@ -56,39 +56,7 @@ class Nug
         } else {
             return new Rest\Response(array(
                 'domain_id' => $domain_id,
-                'name'      => 'Test domain',
-                'books' => array(
-                    'book' => array(
-                        array(
-                            'title' => 'Fellowship',
-                            'authors' => array(
-                                'author' => array(
-                                    'JRR Tolkien',
-                                )
-                            )
-                        ),
-                        array(
-                            'title' => 'Two Towers',
-                            'authors' => array(
-                                'author' => array(
-                                    'JRR Tolkien',
-                                )
-                            )
-                        ),
-                        array(
-                            'title' => 'Return of the King',
-                            'authors' => array(
-                                '@attributes' => array(
-                                    'count' => 2
-                                ),
-                                'author' => array(
-                                    'JRR Tolkien',
-                                    'Christopher Tokien'
-                                )
-                            )
-                        )
-                    )
-                )
+                'name'      => 'Test domain'
             ));
         }
     }
