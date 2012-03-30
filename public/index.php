@@ -14,6 +14,7 @@ $app['debug'] = true;
 
 // Register the App namespace to the autoloader
 $app['autoloader']->registerNamespace('App', APP_ROOT.'/lib');
+$app['autoloader']->registerNamespace('Zimbra', APP_ROOT.'/lib/Libersoft/src/');
 
 // Handle errors
 $app->error(function (\Exception $e, $code) {
@@ -36,6 +37,16 @@ $app->after(function (Request $request, Response $response) {
         }
     }
 });
+
+// Register classes in Pimple DI
+$app['service_nug'] = function() use ($app){
+    return new \App\Service\Nug($app);
+};
+$app['zimbra_admin_domain'] = function() use ($app){
+    $zimbraDomainAdmin = new \Zimbra\ZCS\Admin\Domain('mail.webruimte.eu', 7071);
+    $zimbraDomainAdmin->auth('admin', 'kl!tr34h');
+    return $zimbraDomainAdmin;
+};
 
 // Mount controllers
 $app->mount('/nug', new App\Controller\Nug());

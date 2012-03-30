@@ -10,6 +10,12 @@ class Nug
     implements ControllerProviderInterface
 {
     /**
+     * The nug service class
+     * @var \App\Service\Nug
+     */
+    public $nugService;
+
+    /**
      * Returns routes to connect to the given application.
      *
      * @param \Silex\Application $app
@@ -18,6 +24,8 @@ class Nug
     public function connect(Application $app)
     {
         $this->init($app);
+
+        $this->nugService = $this->app['service_nug'];
 
         $this->controllers->get ('/domain/',             array($this, '_domainGetCollection'));
         $this->controllers->put ('/domain/',             array($this, '_domainCreate'));
@@ -35,9 +43,8 @@ class Nug
      */
     public function _domainGetCollection()
     {
-        return new Rest\Response(array(
-            'status' => "Here is a list with all domains ..."
-        ));
+        $domains = $this->nugService->getDomains();
+        return new Rest\Response($domains);
     }
 
     /**
@@ -49,16 +56,8 @@ class Nug
      */
     public function _domainGetDetail($domain_id)
     {
-        if($domain_id < 10) {
-            throw new Rest\Exception\ResourceNotFound("The domain resource with id {$domain_id} does not exist");
-        } elseif($domain_id < 20) {
-            throw new Rest\Exception\AccessDenied();
-        } else {
-            return new Rest\Response(array(
-                'domain_id' => $domain_id,
-                'name'      => 'Test domain'
-            ));
-        }
+        $domain = $this->nugService->getDomain($domain_id);
+        return new Rest\Response($domain);
     }
 
     /**
