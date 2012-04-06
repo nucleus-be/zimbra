@@ -13,9 +13,15 @@ class Nug
 
     /**
      * The Zimbra community server admin class
-     * @var \Zimbra\ZCS\Admin
+     * @var \Zimbra\ZCS\Admin\Domain
      */
     protected $zimbraDomainAdmin;
+
+    /**
+     * The Zimbra community server admin class
+     * @var \Zimbra\ZCS\Admin\Cos
+     */
+    protected $zimbraCosAdmin;
 
     /**
      * Initializes properties
@@ -30,17 +36,13 @@ class Nug
      * Gets an array with all Nug domains
      * @return array
      */
-    public function getDomains()
+    public function getDomainList()
     {
         $domains = $this->_getZimbraDomainAdmin()->getDomains();
 
         $domainList = array();
         foreach($domains as $domain){
             $preparedDomain = $this->_prepareDomain($domain);
-            $preparedDomain['subresources'] = array(
-                'detail'   => '/nug/domain/'.$preparedDomain['id'].'/',
-                'account_list' => '/nug/domain/'.$preparedDomain['id'].'/account/'
-            );
             $domainList[] = $preparedDomain;
         }
         return $domainList;
@@ -58,6 +60,37 @@ class Nug
     }
 
     /**
+     * Gets an array with all Nug Classes of Service
+     * @return array
+     */
+    public function getCosList()
+    {
+        $cosses = $this->_getZimbraCosAdmin()->getCosList();
+
+        $cosList = array();
+        foreach($cosses as $cos){
+            $preparedCos = $this->_prepareCos($cos);
+            $cosList[] = $preparedCos;
+        }
+        return $cosList;
+    }
+
+    /**
+     * Gets a single Nug Class of Service
+     * @param string $cos_id
+     * @return \Zimbra\ZCS\Entity\Co
+     */
+    public function getCos($cos_id)
+    {
+        if(!$cos_id){
+             return null;
+        } else {
+            $cos = $this->_getZimbraCosAdmin()->getCos($cos_id);
+            return  $this->_prepareCos($cos);
+        }
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */
@@ -70,6 +103,18 @@ class Nug
     }
 
     /**
+     * Gets the Zimbra Cos admin from the DI container
+     * @return \Zimbra\ZCS\Admin\Cos
+     */
+    protected function _getZimbraCosAdmin()
+    {
+        if (!$this->zimbraCosAdmin){
+            $this->zimbraCosAdmin = $this->app['zimbra_admin_cos'];
+        }
+        return $this->zimbraCosAdmin;
+    }
+
+    /**
      * Transforms the response object from the Zimbra soap service into a
      * usable array with only the parameters we need
      * @param \Zimbra\ZCS\Entity\Domain $domain
@@ -77,13 +122,36 @@ class Nug
      */
     private function _prepareDomain(\Zimbra\ZCS\Entity\Domain $domain)
     {
-        //var_dump($domain);
-        $domain = array(
+        $result = array(
             'id'             => $domain->id,
             'name'           => $domain->name,
-            'default_cos_id' => $domain->zimbraDomainDefaultCOSId
+            'default_cos_id' => $domain->zimbraDomainDefaultCOSId,
+            'subresources'   => array(
+                'detail'   => '/nug/domain/'.$domain->id . '/',
+                'account_list' => '/nug/domain/'.$domain->id . '/account/'
+            )
         );
-        return $domain;
+
+        if($domain->zimbraDomainDefaultCOSId){
+            $result['subresources']['default_cos'] = '/nug/cos/' . $domain->zimbraDomainDefaultCOSId;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Transforms the response object from the Zimbra soap service into a
+     * usable array with only the parameters we need
+     * @param \Zimbra\ZCS\Entity\Cos $cos
+     * @return array
+     */
+    private function _prepareCos(\Zimbra\ZCS\Entity\Cos $cos)
+    {
+        $result = array(
+            'id'             => $cos->id,
+            'name'           => $cos->name
+        );
+        return $result;
     }
 
 }
