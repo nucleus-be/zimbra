@@ -60,6 +60,21 @@ class Nug
     }
 
     /**
+     * Creates a Domain in the Nug webservice
+     * @param array $domain The data to be saved in the array, only certain properties are allowed
+     * @return array
+     */
+    public function createDomain(array $domain)
+    {
+        $data = $this->_filterValues($domain, array(
+            'name'
+        ));
+
+        $newDomain = $this->_getZimbraDomainAdmin()->createDomain($data);
+        return  $this->_prepareDomain($newDomain);
+    }
+
+    /**
      * Gets an array with all Nug Classes of Service
      * @return array
      */
@@ -152,6 +167,19 @@ class Nug
             'name'           => $cos->name
         );
         return $result;
+    }
+
+    /**
+     * Returns $data with only the allowed keys set, the rest is
+     * discarded
+     * @param array $data The array to filter
+     * @param array $allowedKeys An array with allowed keys for $data
+     * @return array
+     */
+    private function _filterValues(array $data, $allowedKeys = array())
+    {
+        $keys = array_flip($allowedKeys);
+        return array_intersect_key($data, $keys);
     }
 
 }

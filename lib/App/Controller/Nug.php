@@ -29,9 +29,9 @@ class Nug
 
         // Domain actions
         $this->controllers->get ('/domain/',             array($this, '_domainGetCollection'));
-        $this->controllers->put ('/domain/',             array($this, '_domainCreate'));
+        $this->controllers->post('/domain/',             array($this, '_domainCreate'));
         $this->controllers->get ('/domain/{domain_id}/', array($this, '_domainGetDetail'));
-        $this->controllers->post('/domain/{domain_id}/', array($this, '_domainUpdate'));
+        $this->controllers->put ('/domain/{domain_id}/', array($this, '_domainUpdate'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -85,8 +85,11 @@ class Nug
      */
     public function _domainCreate()
     {
+        $domainData = $this->app['request']->request->get('domain');
+        $domain = $this->nugService->createDomain($domainData);
+
         return new Rest\Response(array(
-            'status' => "Create new domain"
+            'domain' => $domain
         ));
     }
 
