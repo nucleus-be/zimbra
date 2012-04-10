@@ -75,6 +75,17 @@ class Nug
     }
 
     /**
+     * Deletes a Domain from the Nug webservice
+     * @param string $domain_id
+     * @return ??
+     */
+    public function deleteDomain($domain_id)
+    {
+        $result = $this->_getZimbraDomainAdmin()->deleteDomain($domain_id);
+        return $result;
+    }
+
+    /**
      * Gets an array with all Nug Classes of Service
      * @return array
      */

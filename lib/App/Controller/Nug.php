@@ -28,10 +28,11 @@ class Nug
         $this->nugService = $this->app['service_nug'];
 
         // Domain actions
-        $this->controllers->get ('/domain/',             array($this, '_domainGetCollection'));
-        $this->controllers->post('/domain/',             array($this, '_domainCreate'));
-        $this->controllers->get ('/domain/{domain_id}/', array($this, '_domainGetDetail'));
-        $this->controllers->put ('/domain/{domain_id}/', array($this, '_domainUpdate'));
+        $this->controllers->get   ('/domain/',             array($this, '_domainGetCollection'));
+        $this->controllers->post  ('/domain/',             array($this, '_domainCreate'));
+        $this->controllers->get   ('/domain/{domain_id}/', array($this, '_domainGetDetail'));
+        $this->controllers->put   ('/domain/{domain_id}/', array($this, '_domainUpdate'));
+        $this->controllers->delete('/domain/{domain_id}/', array($this, '_domainDelete'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -90,6 +91,22 @@ class Nug
 
         return new Rest\Response(array(
             'domain' => $domain
+        ));
+    }
+
+    /**
+     * Returns the response to DELETE /domain/{domain_id}
+     * which removes an existing domain
+     * @param $domain_id
+     * @return \App\Rest\Response
+     */
+    public function _domainDelete($domain_id)
+    {
+        $result = $this->nugService->deleteDomain($domain_id);
+
+        return new Rest\Response(array(
+            'success' => $result,
+            'message' => 'The domain has been successfully deleted'
         ));
     }
 
