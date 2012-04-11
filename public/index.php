@@ -14,7 +14,7 @@ $app['debug'] = true;
 
 // Register the App namespace to the autoloader
 $app['autoloader']->registerNamespace('App', APP_ROOT.'/lib');
-$app['autoloader']->registerNamespace('Zimbra', APP_ROOT.'/lib/Libersoft/src/');
+$app['autoloader']->registerNamespace('Zimbra', APP_ROOT.'/lib/Nucleus/src/');
 
 // Handle errors
 $app->error(function (\Exception $e, $code) {
