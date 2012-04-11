@@ -17,6 +17,7 @@ class Domain extends \Zimbra\ZCS\Entity
      * @var array
      */
     protected $_datamap = array(
-        'zimbraDomainDefaultCOSId' => 'default_cos_id'
+        'zimbraDomainDefaultCOSId' => 'default_cos_id',
+        'zimbraDomainName' => 'name'
     );
 }

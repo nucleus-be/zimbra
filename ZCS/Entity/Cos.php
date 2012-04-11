@@ -11,5 +11,11 @@ namespace Zimbra\ZCS\Entity;
 
 class Cos extends \Zimbra\ZCS\Entity
 {
-
+    /**
+     * Extra field mapping
+     * @var array
+     */
+    protected $_datamap = array(
+        'cn' => 'name'
+    );
 }
