@@ -18,8 +18,7 @@ class Entity
      * @var array
      */
     protected $_basic_datamap = array(
-        'zimbraId'         => 'id',
-        'zimbraDomainName' => 'name'
+        'zimbraId'         => 'id'
     );
 
     /**
@@ -76,7 +75,6 @@ class Entity
     {
         $datamap = $this->getDataMap();
         $data = $this->getExtraData();
-
         foreach($datamap as $zimbra_key => $local_key){
             if(isset($data[$zimbra_key]) && !is_null($data[$zimbra_key])){
                $this->_data[$local_key] = (string) $data[$zimbra_key];
