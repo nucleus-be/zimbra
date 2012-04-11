@@ -148,14 +148,10 @@ class Nug
      */
     private function _prepareDomain(\Zimbra\ZCS\Entity\Domain $domain)
     {
-        $result = array(
-            'id'             => $domain->id,
-            'name'           => $domain->name,
-            'default_cos_id' => $domain->zimbraDomainDefaultCOSId,
-            'subresources'   => array(
-                'detail'   => '/nug/domain/'.$domain->id . '/',
-                'account_list' => '/nug/domain/'.$domain->id . '/account/'
-            )
+        $result = $domain->toArray();
+        $result['subresources'] = array(
+            'detail'   => '/nug/domain/'.$domain->id . '/',
+            'account_list' => '/nug/domain/'.$domain->id . '/account/'
         );
 
         if($domain->zimbraDomainDefaultCOSId){
@@ -173,10 +169,7 @@ class Nug
      */
     private function _prepareCos(\Zimbra\ZCS\Entity\Cos $cos)
     {
-        $result = array(
-            'id'             => $cos->id,
-            'name'           => $cos->name
-        );
+        $result = $cos->toArray();
         return $result;
     }
 
