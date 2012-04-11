@@ -86,7 +86,7 @@ class Nug
      */
     public function _domainCreate()
     {
-        $domainData = $this->app['request']->request->get('domain');
+        $domainData = $this->app['request']->request->get('domain', array());
         $domain = $this->nugService->createDomain($domainData);
 
         return new Rest\Response(array(
