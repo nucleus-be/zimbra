@@ -15,7 +15,16 @@ use Symfony\Component\Validator\Constraints;
 
 class Domain extends \Zimbra\ZCS\Entity
 {
+    /**
+     * The Zimbra ID of the default COS for this Domain
+     * @var string
+     */
     private $defaultCosId;
+
+    /**
+     * The name for this domain
+     * @var string
+     */
     private $name;
 
     /**
