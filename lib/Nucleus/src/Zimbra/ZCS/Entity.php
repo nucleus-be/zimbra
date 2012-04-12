@@ -69,7 +69,7 @@ class Entity
 
     /**
      * Processes the datamap and sets properties on this Entity
-     * based on the mapping
+     * based on the mappings
      */
     protected function _processDataMap()
     {
