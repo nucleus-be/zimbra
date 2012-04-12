@@ -22,7 +22,7 @@ class Cos
 
         $results = array();
         foreach ($cosList as $cos) {
-            $results[] = new \Zimbra\ZCS\Entity\Cos ($cos);
+            $results[] = \Zimbra\ZCS\Entity\Cos::createFromXml($cos);
         }
         return $results;
     }
@@ -52,7 +52,7 @@ class Cos
         $response = $this->soapClient->request('GetCosRequest', $attributes, $params);
         $coslist = $response->children()->GetCosResponse->children()->cos;
 
-        return new \Zimbra\ZCS\Entity\Cos($coslist);
+        return \Zimbra\ZCS\Entity\Cos::createFromXml($coslist);
     }
 
 }
