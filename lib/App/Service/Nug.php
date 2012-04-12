@@ -150,12 +150,12 @@ class Nug
     {
         $result = $domain->toArray();
         $result['subresources'] = array(
-            'detail'   => '/nug/domain/'.$domain->id . '/',
-            'account_list' => '/nug/domain/'.$domain->id . '/account/'
+	    'detail'   => '/nug/domain/'.$domain->getId() . '/',
+	    'account_list' => '/nug/domain/'.$domain->getId() . '/account/'
         );
 
-        if($domain->zimbraDomainDefaultCOSId){
-            $result['subresources']['default_cos'] = '/nug/cos/' . $domain->zimbraDomainDefaultCOSId;
+	if($domain->getDefaultCosId()){
+	    $result['subresources']['default_cos'] = '/nug/cos/' . $domain->getDefaultCosId();
         }
 
         return $result;
@@ -171,19 +171,6 @@ class Nug
     {
         $result = $cos->toArray();
         return $result;
-    }
-
-    /**
-     * Returns $data with only the allowed keys set, the rest is
-     * discarded
-     * @param array $data The array to filter
-     * @param array $allowedKeys An array with allowed keys for $data
-     * @return array
-     */
-    private function _filterValues(array $data, $allowedKeys = array())
-    {
-        $keys = array_flip($allowedKeys);
-        return array_intersect_key($data, $keys);
     }
 
 }
