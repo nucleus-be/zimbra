@@ -10,14 +10,22 @@
 
 namespace Zimbra\ZCS;
 
-class Entity
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+
+abstract class Entity
 {
+    /**
+     * The Entity id
+     * @var string
+     */
+    private $id;
+
     /**
      * Maps properties from the Zimbra Soap response
      * to properties of the Entity
      * @var array
      */
-    protected $_basic_datamap = array(
+    protected static $_basic_datamap = array(
         'zimbraId'         => 'id'
     );
 
@@ -27,89 +35,79 @@ class Entity
      * to add to the Entity
      * @var array
      */
-    protected $_datamap = array();
-
-    /**
-     * Stores the properties of this entity, accessible by the magic
-     * __get and __set methods
-     * @var array
-     */
-    protected $_data = array();
+    protected static $_datamap = array();
 
     /**
      * If this entity is constructed from an XML element (probably from the SOAP webservice)
-     * we store the original XML for later retieval
-     * @var \SimpleXMLElement
+     * we store the original XML for later retieval, else we store the decoded JSON object here
+     * @var \SimpleXMLElement|\stdClass XML or JSON object
      */
-    protected $_sourceXml;
+    protected $_source;
 
     /**
-     * This variable contains all parsed XML properties from the SOAP webservice, most
-     * of these properties aren't used but they are here for retrieval anyway
-     * @var array
+     * Creates a new Entity based on a json object using the datamap
+     * @static
+     * @param \stdClass $json
+     * @return Entity
      */
-    protected $_extra_data;
-
-    /**
-     * Constructor
-     * @param $data Either an array with parameters or a SimpleXMLElement
-     */
-    public function __construct($data)
+    public static function createFromJson(\stdClass $json)
     {
-        // Save the originating XML for later access and
-        // parse it into an array saved as $_extra_data
-        if($data instanceof \SimpleXMLElement){
-            $this->setSourceXml($data);
-            $this->_setExtraDataFromXml($data);
+        // Get the properties from the datamap
+        $properties = array_values(self::getDataMap());
+
+        // Create dummy entity
+        $class = get_called_class();
+        $entity = new $class(array());
+
+        // Set the properties from the json based on the datamap
+        foreach($properties as $property){
+            $setter = 'set'.ucfirst($property);
+            if(!method_exists($entity, $setter)){
+                throw new \Exception(sprintf('Cannot create entity from JSON, property %s on the % entity does not exist!', $property, $class));
+            }
+            $entity->$setter(isset($json->$property) ? $json->$property : null);
         }
 
-        // Process the datamap to pull XML properties into this Entity
-        $this->_processDataMap();
+        // Set the source
+        $entity->setSource($json);
+
+        return $entity;
     }
 
     /**
-     * Processes the datamap and sets properties on this Entity
-     * based on the mappings
+     * Creates a new Entity based on a SimpleXML object using the datamap
+     * @static
+     * @param \SimpleXMLElement $xmlElement
+     * @return Entity
      */
-    protected function _processDataMap()
+    public static function createFromXml(\SimpleXMLElement $xmlElement)
     {
-        $datamap = $this->getDataMap();
-        $data = $this->getExtraData();
-        foreach($datamap as $zimbra_key => $local_key){
-            if(isset($data[$zimbra_key]) && !is_null($data[$zimbra_key])){
-               $this->_data[$local_key] = (string) $data[$zimbra_key];
-            } else {
-                $this->_data[$local_key] = null;
-            }
-        }
-    }
+        // Get the properties from the datamap
+        $properties = self::getDataMap();
 
-    /**
-     * Converts a SimpleXMLElement to an array with all properties
-     * returned from the SOAP webservice
-     * @param \SimpleXMLElement $xml
-     */
-    protected function _setExtraDataFromXml(\SimpleXMLElement $xml)
-    {
-        foreach ($xml->children()->a as $data) {
-            $key = (string) $data['n'];
+        // Create dummy entity
+        $class = get_called_class();
+        $entity = new $class(array());
 
-            switch ($data) {
-                case 'FALSE':
-                    $this->_extra_data[$key] = false;
-                    break;
-                case 'TRUE':
-                    $this->_extra_data[$key] = true;
-                    break;
-                default:
-                    if(array_key_exists($key, $this->_extra_data)){
-                        $this->_extra_data[$key] = (array)$this->_extra_data[$key];
-                        $this->_extra_data[$key][] = (string) $data;
-                    } else {
-                        $this->_extra_data[$key] = (string) $data;
-                    }
+        // Create a new SimpleXMLElement, workaround for a bug wheren
+        // simple_xml lib cannot handle XPath on elements with namespaces
+        $xml = new \SimpleXMLElement($xmlElement->asXML());
+
+        // Set the properties from the json based on the datamap
+        foreach($properties as $zimbraKey => $property){
+            $setter = 'set'.ucfirst($property);
+            if(!method_exists($entity, $setter)){
+                throw new \Exception(sprintf('Cannot create entity from XML, property %s on the %s entity does not exist!', $property, $class));
             }
+            $xpathQuery = sprintf("a[@n='%s']", $zimbraKey);
+            $results = $xml->xpath($xpathQuery);
+            $entity->$setter(count($results) > 0 ? (string)$results[0] : null);
         }
+
+        // Set the source
+        $entity->setSource($xml);
+
+        return $entity;
     }
 
     /**
@@ -122,104 +120,72 @@ class Entity
     }
 
     /**
-     * Magic getter for $_data
-     * @param $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        if (array_key_exists($name, $this->_data)) {
-            return $this->_data[$name];
-        } elseif(array_key_exists($name, $this->_extra_data)){
-            return $this->_extra_data[$name];
-        }
-    }
-
-    /**
-     * Getter for all data in $_data
-     * @param $name
-     * @return mixed
-     */
-    public function get($name)
-    {
-        return $this->__get($name);
-    }
-
-    /**
-     * Magic setter for $_data
-     * @param $name
-     * @param $value
-     */
-    public function __set($name, $value)
-    {
-        $this->_data[$name] = $value;
-    }
-
-    /**
-     * Setter for $_data
-     * @param $name
-     * @param $value
-     */
-    public function set($name, $value)
-    {
-        $this->__set($name, $value);
-    }
-
-    /**
      * Array representation of this Entity
      * @return array
      */
     public function toArray()
     {
-        return $this->_data;
-    }
+        $properties = array_values(self::getDataMap());
+        $array = array();
 
-    /**
-     * Gets all attributes set on this Entity
-     * @return array
-     */
-    public function getAttributes()
-    {
-        return array_keys($this->_data);
+        foreach($properties as $property){
+            $getter = 'get'.ucfirst($property);
+            if(!method_exists($this, $getter)){
+                $class = get_called_class();
+                throw new \Exception(sprintf('Cannot return array since getter %s on the %s entity does not exist!', $getter, $class));
+            }
+            $array[$property] = $this->$getter();
+        }
+
+        return $array;
     }
 
     /**
      * Sets the XML this Entity was built from
-     * @param \SimpleXMLElement $sourceXml
+     * @param \SimpleXMLElement|\stdClass $source
      * @return Entity
      */
-    public function setSourceXml(\SimpleXMLElement $sourceXml)
+    public function setSource($source)
     {
-        $this->_sourceXml = $sourceXml;
+        $this->_source = $source;
         return $this;
     }
 
     /**
-     * Returns the XML this Entity was built from
-     * @return \SimpleXMLElement
+     * Returns the source this Entity was built from
+     * @return \SimpleXMLElement|\stdClass
      */
-    public function getSourceXml()
+    public function getSource()
     {
-        return $this->_sourceXml;
+        return $this->_source;
     }
 
     /**
      * Returns a merged datamap
+     * @static
      * @return array
      */
-    public function getDataMap()
+    public static function getDataMap()
     {
-        return array_merge($this->_basic_datamap, $this->_datamap);
+        return array_merge(static::$_basic_datamap, static::$_datamap);
     }
 
     /**
-     * Gets all data returned from the SOAP webservice for this entity as
-     * an array
-     * @return array
+     * Setter for the ID property
+     * @param string $id
      */
-    public function getExtraData()
+    public function setId($id)
     {
-        return $this->_extra_data;
+        $this->id = $id;
+    }
+
+    /**
+     * Getter for the ID property
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
 }
