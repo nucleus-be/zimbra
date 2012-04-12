@@ -21,7 +21,7 @@ class Domain
         $domains = $this->soapClient->request('GetAllDomainsRequest')->children()->GetAllDomainsResponse->children();
         $results = array();
         foreach ($domains as $domain) {
-            $results[] = new \Zimbra\ZCS\Entity\Domain ($domain);
+            $results[] = \Zimbra\ZCS\Entity\Domain::createFromXml($domain);
         }
         return $results;
     }
@@ -51,7 +51,7 @@ class Domain
         $response = $this->soapClient->request('GetDomainRequest', $attributes, $params);
         $domains = $response->children()->GetDomainResponse->children();
 
-        return new \Zimbra\ZCS\Entity\Domain($domains[0]);
+        return \Zimbra\ZCS\Entity\Domain::createFromXml($domains[0]);
     }
 
     public function createDomain($domain)
@@ -60,7 +60,7 @@ class Domain
         $response = $this->soapClient->request('CreateDomainRequest', $attributes, $domain);
 
         $domain = $response->children()->CreateDomainResponse->children();
-        return new \Zimbra\ZCS\Entity\Domain($domain[0]);
+        return \Zimbra\ZCS\Entity\Domain::createFromXml($domain[0]);
     }
 
     public function deleteDomain($domain_id)
