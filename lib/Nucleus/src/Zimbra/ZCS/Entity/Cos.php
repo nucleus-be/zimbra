@@ -12,10 +12,32 @@ namespace Zimbra\ZCS\Entity;
 class Cos extends \Zimbra\ZCS\Entity
 {
     /**
+     * The name of this COS
+     * @var String
+     */
+    private $name;
+
+    /**
      * Extra field mapping
      * @var array
      */
-    protected $_datamap = array(
+    protected static $_datamap = array(
         'cn' => 'name'
     );
+
+    /**
+     * @param String $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return String
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }
