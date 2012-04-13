@@ -54,10 +54,28 @@ class Domain
         return \Zimbra\ZCS\Entity\Domain::createFromXml($domains[0]);
     }
 
-    public function createDomain($domain)
+    /**
+     * Creates a domain in the ZCS soap webservice
+     * @param \Zimbra\ZCS\Entity\Domain $domain
+     * @return \Zimbra\ZCS\Entity
+     */
+    public function createDomain(\Zimbra\ZCS\Entity\Domain $domain)
     {
-        $attributes = array();
-        $response = $this->soapClient->request('CreateDomainRequest', $attributes, $domain);
+        // Domain properties
+        $propertyArray = $domain->toPropertyArray();
+        $name = $propertyArray['zimbraDomainName'];
+
+        // Do not send a zimbraDomainName or zimbraId attribute
+        // The name is sent in the <name> tag and zimbraId shouldn't be sent when creating a new domain!
+        unset($propertyArray['zimbraId']);
+        unset($propertyArray['zimbraDomainName']);
+
+        $properties = array(
+            'name'       => $name,
+            'attributes' => $propertyArray
+        );
+
+        $response = $this->soapClient->request('CreateDomainRequest', array(), $properties);
 
         $domain = $response->children()->CreateDomainResponse->children();
         return \Zimbra\ZCS\Entity\Domain::createFromXml($domain[0]);

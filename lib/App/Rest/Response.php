@@ -22,6 +22,12 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     public $errorMessage;
 
     /**
+     * A list of errors that occurred if not enough info ispr
+     * @var
+     */
+    public $errors;
+
+    /**
      * Constructor overrides default behaviour by inspecting $content, if it's an
      * array the $content variable is used to set the Application Data on the Response
      * so we can later process it
@@ -116,5 +122,16 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     public function getErrorMessage()
     {
         return $this->errorMessage;
+    }
+
+    public function setErrors(array $errors)
+    {
+        $this->errors = $errors;
+        return $this;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

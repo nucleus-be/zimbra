@@ -61,16 +61,19 @@ class Nug
 
     /**
      * Creates a Domain in the Nug webservice
-     * @param array $domain The data to be saved in the array, only certain properties are allowed
+     * @param \stdClass $domain The data to be saved, should be a json decoded object received as payload from a POST request
      * @return array
      */
-    public function createDomain(array $domain)
+    public function createDomain(\Zimbra\ZCS\Entity\Domain $domain)
     {
-        $data = $this->_filterValues($domain, array(
-            'name'
-        ));
+        $violations = $this->app['validator']->validate($domain);
+        if(count($violations) > 0){
+            throw new \Zimbra\ZCS\Entity\InvalidException($violations);
+        }
 
-        $newDomain = $this->_getZimbraDomainAdmin()->createDomain($data);
+        // Create a new one in the webservice
+        $newDomain = $this->_getZimbraDomainAdmin()->createDomain($domain);
+
         return  $this->_prepareDomain($newDomain);
     }
 
@@ -150,12 +153,12 @@ class Nug
     {
         $result = $domain->toArray();
         $result['subresources'] = array(
-	    'detail'   => '/nug/domain/'.$domain->getId() . '/',
-	    'account_list' => '/nug/domain/'.$domain->getId() . '/account/'
+            'detail'   => '/nug/domain/'.$domain->getId() . '/',
+            'account_list' => '/nug/domain/'.$domain->getId() . '/account/'
         );
 
-	if($domain->getDefaultCosId()){
-	    $result['subresources']['default_cos'] = '/nug/cos/' . $domain->getDefaultCosId();
+        if($domain->getDefaultCosId()){
+            $result['subresources']['default_cos'] = '/nug/cos/' . $domain->getDefaultCosId();
         }
 
         return $result;
