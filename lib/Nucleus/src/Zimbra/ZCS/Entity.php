@@ -141,6 +141,28 @@ abstract class Entity
     }
 
     /**
+     * Returns an array representation of this Entity that can be
+     * used to communicate with the Zimbra ZCS server, the array keys
+     * used are all zimbra property names
+     * @return array
+     */
+    public function toPropertyArray()
+    {
+        $array = $this->toArray();
+        $properties = $this->getDataMap();
+        $propertyArray = array();
+
+        foreach($properties as $zimbraProperty => $property)
+        {
+            if(key_exists($property, $array)){
+                $propertyArray[$zimbraProperty] = $array[$property];
+            }
+        }
+
+        return $propertyArray;
+    }
+
+    /**
      * Sets the XML this Entity was built from
      * @param \SimpleXMLElement|\stdClass $source
      * @return Entity

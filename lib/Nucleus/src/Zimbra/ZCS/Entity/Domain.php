@@ -11,21 +11,40 @@
 namespace Zimbra\ZCS\Entity;
 
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Domain extends \Zimbra\ZCS\Entity
 {
     /**
      * The Zimbra ID of the default COS for this Domain
+     * @property
      * @var string
      */
     private $defaultCosId;
 
     /**
      * The name for this domain
+     * @property
      * @var string
      */
     private $name;
+
+    /**
+     * Validation for the properties of this Entity
+     *
+     * @static
+     * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
+     */
+    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        // Name should never be NULL or a blank string
+        $metadata->addPropertyConstraint('name', new Assert\NotNull());
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank());
+
+        // DefaultCosId should either be a non-blank string or NULL
+        // TODO: NotBlank does not allow NULL!
+        $metadata->addPropertyConstraint('defaultCosId', new Assert\NotBlank());
+    }
 
     /**
      * Extra field mapping
@@ -35,13 +54,6 @@ class Domain extends \Zimbra\ZCS\Entity
         'zimbraDomainDefaultCOSId' => 'defaultCosId',
         'zimbraDomainName' => 'name'
     );
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        var_dump($metadata);exit;
-        $metadata->addPropertyConstraint('name', new Constraints\NotBlank());
-        $metadata->addPropertyConstraint('name', new Constraints\MinLength(50));
-    }
 
     public function setDefaultCosId($defaultCosId)
     {

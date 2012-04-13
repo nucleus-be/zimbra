@@ -86,12 +86,15 @@ class Nug
      */
     public function _domainCreate()
     {
-        $domainData = $this->app['request']->request->get('domain', array());
-        $domain = $this->nugService->createDomain($domainData);
+        $domainData = json_decode($this->app['request']->getContent());
+        $domainEntity = \Zimbra\ZCS\Entity\Domain::createFromJson($domainData);
+        $newDomainEntity = $this->nugService->createDomain($domainEntity);
 
-        return new Rest\Response(array(
-            'domain' => $domain
-        ));
+        return new Rest\Response(
+            array('domain' => $newDomainEntity), // Response body, encoded as JSON
+            201, // Status code
+            array('Location' => $this->app['config.domain'] . '/nug/domain/' . $newDomainEntity['id'] . '/') // Extra headers
+        );
     }
 
     /**

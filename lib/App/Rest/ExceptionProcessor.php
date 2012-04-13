@@ -14,6 +14,8 @@ class ExceptionProcessor
             case "App\Rest\Exception\ResourceNotFound":
                 return $response->setError(404)->setErrorMessage($e->getMessage() ?: "Resource not found");
                 break;
+            case "Zimbra\ZCS\Entity\InvalidException":
+                return $response->setError(500)->setErrorMessage($e->getMessage() ?: "Unknown error")->setErrors($e->getViolations());
             case "Exception":
             default:
                 return $response->setError(500)->setErrorMessage($e->getMessage() ?: "Unknown error");
