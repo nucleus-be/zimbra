@@ -11,10 +11,16 @@ require_once APP_ROOT.'/lib/silex.phar';
 // Create the Silex Application
 $app = new Application();
 $app['debug'] = true;
+$app['config.domain'] = "http://api.chris.dev.nucleus.be";
 
 // Register the App namespace to the autoloader
 $app['autoloader']->registerNamespace('App', APP_ROOT.'/lib');
 $app['autoloader']->registerNamespace('Zimbra', APP_ROOT.'/lib/Nucleus/src/');
+
+// Register the validation service
+$app->register(new Silex\Provider\ValidatorServiceProvider(), array(
+    'validator.class_path'    => APP_ROOT.'/lib/'
+));
 
 // Handle errors
 $app->error(function (\Exception $e, $code) {
@@ -28,10 +34,14 @@ $app->after(function (Request $request, Response $response) {
         $writer = App\Rest\Response\Writer::factory($format);
         $response->headers->add($writer->getHeaders());
         if ($response->isError()){
-            $response->setContent($writer->setData(array(
+            $data = array(
                 'error' => true,
                 'message' => $response->getErrorMessage()
-            ))->output());
+            );
+            if($response->getErrors()){
+                $data['errors'] = $response->getErrors();
+            }
+            $response->setContent($writer->setData($data)->output());
         } else {
             $response->setContent($writer->setData($response->getData())->output());
         }
