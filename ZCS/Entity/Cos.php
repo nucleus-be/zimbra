@@ -13,6 +13,7 @@ class Cos extends \Zimbra\ZCS\Entity
 {
     /**
      * The name of this COS
+     * @property
      * @var String
      */
     private $name;
