@@ -21,28 +21,23 @@ class Exception extends \Exception
      */
     public static $errorMap = array(
         'default' => array(
-            'message' => 'An unexpected error has occurred',
-            'code'    => 10000
+            'message' => 'An unexpected error has occurred: %s'
         ),
+        // Account errors
         'account.ACCOUNT_EXISTS' => array(
-            'message' => 'This account already exists',
-            'code'    => 20001
+            'message' => 'This account already exists'
         ),
         'account.NO_SUCH_DOMAIN' => array(
-            'message' => 'This domain does not exist',
-            'code'    => 20002
+            'message' => 'This domain does not exist'
         ),
         'account.DISTRIBUTION_LIST_EXISTS' => array(
-            'message' => 'This distribution list already exists',
-            'code'    => 20003
+            'message' => 'This distribution list already exists'
         ),
-        'account.DOMAIN_EXISTS' => array(
-            'message' => 'This domain already exists',
-            'code'    => 20004
+        'account.DOMAIN_EXISTSs' => array(
+            'message' => 'This domain already exists'
         ),
-        'service.PROXY_ERROR' => array(
-            'message' => 'Error while proxying request to target server',
-            'code'    => 30001
+        'account.DOMAIN_NOT_EMPTY' => array(
+            'message' => 'This domain is not empty, it still contains other entities'
         ),
     );
 
@@ -52,9 +47,9 @@ class Exception extends \Exception
      */
     public function __construct($zimbraErrorCode)
     {
-        $this->zimbraErrorCode = $zimbraErrorCode;
+        $this->setZimbraErrorCode($zimbraErrorCode);
         $error = self::getError($zimbraErrorCode);
-        parent::__construct($error['message'], $error['code']);
+        parent::__construct($error['message']);
     }
 
     private static function getError($zimbraErrorCode)
@@ -67,6 +62,24 @@ class Exception extends \Exception
         }
 
         return $error;
+    }
+
+    /**
+     * Setter for the zimbra error code
+     * @param string $zimbraErrorCode
+     */
+    public function setZimbraErrorCode($zimbraErrorCode)
+    {
+        $this->zimbraErrorCode = $zimbraErrorCode;
+    }
+
+    /**
+     * Getter for the zimbra error code
+     * @return string
+     */
+    public function getZimbraErrorCode()
+    {
+        return $this->zimbraErrorCode;
     }
 
 }

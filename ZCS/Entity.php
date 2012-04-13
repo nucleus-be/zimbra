@@ -15,6 +15,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 abstract class Entity
 {
     /**
+     * A validator instance
+     * @var \Symfony\Component\Validator\Validator
+     */
+    protected $validator;
+
+    /**
      * The Entity id
      * @var string
      */
@@ -108,6 +114,21 @@ abstract class Entity
         $entity->setSource($xml);
 
         return $entity;
+    }
+
+    /**
+     * Validated this Entity according to the rules specified in self::loadValidatorMetadata
+     * @throws Exception
+     * @return \Symfony\Component\Validator\ConstraintViolationList
+     */
+    public function validate()
+    {
+        if(!$this->validator){
+            throw new \Exception('Cannot validate Entity, no validator present!');
+        }
+
+        $violations = $this->validator->validate($this);
+        return $violations;
     }
 
     /**
@@ -208,6 +229,16 @@ abstract class Entity
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param $validator
+     * @return \Zimbra\ZCS\Entity
+     */
+    public function setValidator(\Symfony\Component\Validator\Validator $validator)
+    {
+        $this->validator = $validator;
+        return $this;
     }
 
 }
