@@ -2,18 +2,17 @@
 
 /**
  * @author Chris Ramakers <chris.ramakers@gmail.com>
- * @license http://www.gnu.org/licenses/gpl.txt
  */
-namespace Zimbra\ZCS\Entity;
+namespace Zimbra\ZCS\Exception;
 
-class InvalidException extends \Exception
+class InvalidEntity extends \Zimbra\ZCS\Exception
 {
     protected $violations;
 
-    public function __construct($violations, $message="Something went wrong validating this Entity!", $code=null)
+    public function __construct($violations, $message="Something went wrong validating this Entity!", $code=0, $previous=null)
     {
         $this->violations = $violations;
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 
     public function getViolations()
