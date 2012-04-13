@@ -58,7 +58,7 @@ class Nug
      * which returns the details of a domain identified by $domain_id
      * @param integer $domain_id
      * @return \App\Rest\Response
-     * @throws \App\Rest\Exception\AccessDenied|\App\Rest\Exception\ResourceNotFound
+     * @throws \App\Rest\Exception\ResourceNotFound
      */
     public function _domainGetDetail($domain_id)
     {
@@ -130,7 +130,7 @@ class Nug
      * which returns the details of a COS identified by $cos_id
      * @param integer $cos_id
      * @return \App\Rest\Response
-     * @throws \App\Rest\Exception\AccessDenied|\App\Rest\Exception\ResourceNotFound
+     * @throws \App\Rest\Exception\ResourceNotFound
      */
     public function _cosGetDetail($cos_id)
     {

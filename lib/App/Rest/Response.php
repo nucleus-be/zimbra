@@ -22,6 +22,12 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     public $errorMessage;
 
     /**
+     * An error code that helps programmatically identify what error occurred
+     * @var string
+     */
+    public $errorCode;
+
+    /**
      * A list of errors that occurred if not enough info ispr
      * @var
      */
@@ -133,5 +139,23 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * @param string $errorCode
+     * @return \App\Rest\Response
+     */
+    public function setErrorCode($errorCode)
+    {
+        $this->errorCode = $errorCode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorCode()
+    {
+        return $this->errorCode;
     }
 }

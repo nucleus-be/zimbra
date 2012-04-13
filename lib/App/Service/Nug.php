@@ -55,18 +55,29 @@ class Nug
      */
     public function getDomain($domain_id)
     {
-        $domain = $this->_getZimbraDomainAdmin()->getDomain($domain_id);
+        try {
+            $domain = $this->_getZimbraDomainAdmin()->getDomain($domain_id);
+        } catch(\Zimbra\ZCS\Exception $e) {
+            if($e->getZimbraErrorCode() == 'account.NO_SUCH_DOMAIN'){
+                throw new \App\Rest\Exception\ResourceNotFound();
+            } else {
+                throw $e;
+            }
+        }
+
         return  $this->_prepareDomain($domain);
     }
 
     /**
      * Creates a Domain in the Nug webservice
-     * @param \stdClass $domain The data to be saved, should be a json decoded object received as payload from a POST request
+     * @param \Zimbra\ZCS\Entity\Domain $domain The data to be saved, should be a json decoded object received as payload from a POST request
      * @return array
      */
     public function createDomain(\Zimbra\ZCS\Entity\Domain $domain)
     {
-        $violations = $this->app['validator']->validate($domain);
+        $domain->setValidator($this->app['validator']);
+        $violations = $domain->validate();
+
         if(count($violations) > 0){
             throw new \Zimbra\ZCS\Entity\InvalidException($violations);
         }
@@ -80,7 +91,6 @@ class Nug
     /**
      * Deletes a Domain from the Nug webservice
      * @param string $domain_id
-     * @return ??
      */
     public function deleteDomain($domain_id)
     {
@@ -114,7 +124,15 @@ class Nug
         if(!$cos_id){
              return null;
         } else {
-            $cos = $this->_getZimbraCosAdmin()->getCos($cos_id);
+            try {
+                $cos = $this->_getZimbraCosAdmin()->getCos($cos_id);
+            } catch(\Zimbra\ZCS\Exception $e) {
+                if($e->getZimbraErrorCode() == 'account.NO_SUCH_COS'){
+                    throw new \App\Rest\Exception\ResourceNotFound();
+                } else {
+                    throw $e;
+                }
+            }
             return  $this->_prepareCos($cos);
         }
     }
