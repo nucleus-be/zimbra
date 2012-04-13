@@ -3,9 +3,7 @@
 /**
  * A basic Zimbra object.
  *
- * @author LiberSoft <info@libersoft.it>
  * @author Chris Ramakers <chris.ramakers@gmail.com>
- * @license http://www.gnu.org/licenses/gpl.txt
  */
 
 namespace Zimbra\ZCS;
@@ -118,16 +116,20 @@ abstract class Entity
 
     /**
      * Validated this Entity according to the rules specified in self::loadValidatorMetadata
-     * @throws Exception
+     * @throws \Zimbra\ZCS\Exception
      * @return \Symfony\Component\Validator\ConstraintViolationList
      */
     public function validate()
     {
         if(!$this->validator){
-            throw new \Exception('Cannot validate Entity, no validator present!');
+            throw new \Zimbra\ZCS\Exception('Cannot validate Entity, no validator present!');
         }
 
         $violations = $this->validator->validate($this);
+        if(count($violations) > 0) {
+            throw new \Zimbra\ZCS\Exception\InvalidEntity($violations);
+        }
+
         return $violations;
     }
 

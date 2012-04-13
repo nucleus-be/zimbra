@@ -24,6 +24,7 @@ $app->register(new Silex\Provider\ValidatorServiceProvider(), array(
 
 // Handle errors
 $app->error(function (\Exception $e, $code) {
+    var_dump($e);exit;
     return ExceptionProcessor::process($e);
 });
 

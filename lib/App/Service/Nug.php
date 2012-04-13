@@ -76,11 +76,7 @@ class Nug
     public function createDomain(\Zimbra\ZCS\Entity\Domain $domain)
     {
         $domain->setValidator($this->app['validator']);
-        $violations = $domain->validate();
-
-        if(count($violations) > 0){
-            throw new \Zimbra\ZCS\Entity\InvalidException($violations);
-        }
+        $domain->validate();
 
         // Create a new one in the webservice
         $newDomain = $this->_getZimbraDomainAdmin()->createDomain($domain);
