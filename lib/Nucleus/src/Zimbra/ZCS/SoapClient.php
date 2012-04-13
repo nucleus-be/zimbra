@@ -3,9 +3,7 @@
 /**
  * Handles the assembling of the low-level XML SOAP message
  *
- * @author LiberSoft <info@libersoft.it>
  * @author Chris Ramakers <chris.ramakers@gmail.com>
- * @license http://www.gnu.org/licenses/gpl.txt
  */
 
 namespace Zimbra\ZCS;
