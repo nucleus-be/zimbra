@@ -36,7 +36,8 @@ $app->after(function (Request $request, Response $response) {
         if ($response->isError()){
             $data = array(
                 'error' => true,
-                'message' => $response->getErrorMessage()
+                'message' => $response->getErrorMessage(),
+                'code' => $response->getErrorCode()
             );
             if($response->getErrors()){
                 $data['errors'] = $response->getErrors();

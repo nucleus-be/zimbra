@@ -8,17 +8,19 @@ class ExceptionProcessor
     {
         $response = new Response();
         switch(get_class($e)){
-            case "App\Rest\Exception\AccessDenied":
-                return $response->setError(403)->setErrorMessage($e->getMessage() ?: "Access denied");
-                break;
             case "App\Rest\Exception\ResourceNotFound":
-                return $response->setError(404)->setErrorMessage($e->getMessage() ?: "Resource not found");
+                $response->setError(404);
                 break;
             case "Zimbra\ZCS\Entity\InvalidException":
-                return $response->setError(500)->setErrorMessage($e->getMessage() ?: "Unknown error")->setErrors($e->getViolations());
+                $response->setError(500)->setErrors($e->getViolations());
+                break;
+            case "Zimbra\ZCS\Exception":
+                $response->setError(500)->setErrorCode($e->getZimbraErrorCode());
+                break;
             case "Exception":
             default:
-                return $response->setError(500)->setErrorMessage($e->getMessage() ?: "Unknown error");
+                $response->setError(500);
         }
+        return $response->setErrorMessage($e->getMessage());
     }
 }

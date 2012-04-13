@@ -84,6 +84,7 @@ class Domain
     public function deleteDomain($domain_id)
     {
         $attributes = array();
+
         $response = $this->soapClient->request('DeleteDomainRequest', $attributes, array(
             'id' => $domain_id
         ));
