@@ -131,13 +131,13 @@ class SoapClient
      * Handles the response
      * @param string $soapMessage The response
      * @return \SimpleXMLElement The response XML <Body> tag
-     * @throws \Exception|Exception
      */
     private function handleResponse($soapMessage)
     {
-        // No message is returned, something went wrong, throw a generic exception
+        // No message is returned, something went wrong, throw a Soap exception which
+        // means there was an error communicating with the soap webservice
         if (!$soapMessage) {
-            throw new \Exception(curl_error($this->curlHandle), curl_errno($this->curlHandle));
+            throw new \Zimbra\ZCS\Exception\Soap(curl_error($this->curlHandle), curl_errno($this->curlHandle));
         }
 
         // Construct a SimpleXMLElement from the message
@@ -148,10 +148,10 @@ class SoapClient
             echo self::formatXml($xml->asXml());
         }
 
-        // If the response is a Fault throw a custom exception
+        // If the response is a Fault throw a webservice exception
         $fault = $xml->children('soap', true)->Body->Fault;
         if ($fault) {
-            throw new \Zimbra\ZCS\Exception($fault->Detail->children()->Error->Code->__toString());
+            throw new \Zimbra\ZCS\Exception\Webservice($fault->Detail->children()->Error->Code->__toString());
         }
 
         // Return the body element from the XML
