@@ -24,29 +24,23 @@ $app->register(new Silex\Provider\ValidatorServiceProvider(), array(
 
 // Handle errors
 $app->error(function (\Exception $e, $code) {
-    var_dump($e);exit;
-    return ExceptionProcessor::process($e);
+
+    // Silex puts the errorcode $code in this callback, in case
+    // a standard non-500 HTTP error is set it means the error is caused
+    // by a missing route or something like that, else Silex returns a
+    // 500 error in which case custom exceptions could be thrown and
+    // we handle it with our Rest Response class
+    if($code == 500) {
+        return \App\Rest\Response::fromException($e, $code);
+    }
 });
 
 // After filter to create the response based on the requested format (default = json)
 $app->after(function (Request $request, Response $response) {
-    if($response instanceof App\Rest\Response){
-        $format = $request->query->get('format', 'json');
-        $writer = App\Rest\Response\Writer::factory($format);
+    if($response instanceof \App\Rest\Response){
+        $writer = \App\Rest\Response\Writer::factory('json');
         $response->headers->add($writer->getHeaders());
-        if ($response->isError()){
-            $data = array(
-                'error' => true,
-                'message' => $response->getErrorMessage(),
-                'code' => $response->getErrorCode()
-            );
-            if($response->getErrors()){
-                $data['errors'] = $response->getErrors();
-            }
-            $response->setContent($writer->setData($data)->output());
-        } else {
-            $response->setContent($writer->setData($response->getData())->output());
-        }
+        $response->setContent($writer->setData($response->getData())->output());
     }
 });
 

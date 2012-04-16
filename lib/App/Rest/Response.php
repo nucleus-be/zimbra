@@ -52,6 +52,28 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     }
 
     /**
+     * Builds a Response object from an Exception
+     * @static
+     * @param \Exception $e
+     * @return \App\Rest\Response
+     */
+    public static function fromException(\Exception $e)
+    {
+        $response = new self();
+        $data = array(
+            'error' => true,
+            'message' => $e->getMessage(),
+            'code' => $e->getCode()
+        );
+        if(method_exists($e, 'getErrors')){
+            $data['errors'] = $e->getErrors();
+        }
+        $response->setData($data);
+        $response->setStatusCode(500);
+        return $response;
+    }
+
+    /**
      * Setter for $data
      * @param array $value
      * @return \App\Rest\Response
