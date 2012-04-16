@@ -74,9 +74,17 @@ class Nug
      */
     public function _domainUpdate($domain_id)
     {
-        return new Rest\Response(array(
-            'status' => "Update domain with id " . $domain_id
-        ));
+        $domainData = json_decode($this->app['request']->getContent());
+        $domainEntity = \Zimbra\ZCS\Entity\Domain::createFromJson($domainData);
+        $domainEntity->setId($domain_id);
+
+        $updatedDomainEntity = $this->nugService->updateDomain($domainEntity);
+
+        return new Rest\Response(
+            array('domain' => $updatedDomainEntity), // Response body, encoded as JSON
+            201, // Status code
+            array('Location' => $this->app['config.domain'] . '/nug/domain/' . $updatedDomainEntity['id'] . '/') // Extra headers
+        );
     }
 
     /**
