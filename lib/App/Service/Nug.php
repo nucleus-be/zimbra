@@ -55,16 +55,7 @@ class Nug
      */
     public function getDomain($domain_id)
     {
-        try {
-            $domain = $this->_getZimbraDomainAdmin()->getDomain($domain_id);
-        } catch(\Zimbra\ZCS\Exception $e) {
-            if($e->getZimbraErrorCode() == 'account.NO_SUCH_DOMAIN'){
-                throw new \App\Rest\Exception\ResourceNotFound();
-            } else {
-                throw $e;
-            }
-        }
-
+        $domain = $this->_getZimbraDomainAdmin()->getDomain($domain_id);
         return  $this->_prepareDomain($domain);
     }
 
@@ -117,20 +108,8 @@ class Nug
      */
     public function getCos($cos_id)
     {
-        if(!$cos_id){
-             return null;
-        } else {
-            try {
-                $cos = $this->_getZimbraCosAdmin()->getCos($cos_id);
-            } catch(\Zimbra\ZCS\Exception $e) {
-                if($e->getZimbraErrorCode() == 'account.NO_SUCH_COS'){
-                    throw new \App\Rest\Exception\ResourceNotFound();
-                } else {
-                    throw $e;
-                }
-            }
-            return  $this->_prepareCos($cos);
-        }
+        $cos = $this->_getZimbraCosAdmin()->getCos($cos_id);
+        return  $this->_prepareCos($cos);
     }
 
     /**
