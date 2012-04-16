@@ -80,6 +80,33 @@ class Domain
         return \Zimbra\ZCS\Entity\Domain::createFromXml($domain[0]);
     }
 
+    /**
+     * Updates a domain in the ZCS soap webservice
+     * @param \Zimbra\ZCS\Entity\Domain $domain
+     * @return \Zimbra\ZCS\Entity
+     */
+    public function updateDomain(\Zimbra\ZCS\Entity\Domain $domain)
+    {
+        // Domain properties
+        $propertyArray = $domain->toPropertyArray();
+        $id = $domain->getId();
+
+        // Do not send a zimbraDomainName or zimbraId attribute
+        // The name is immutable and zimbraId shouldn't be sent when updating a domain!
+        unset($propertyArray['zimbraId']);
+        unset($propertyArray['zimbraDomainName']);
+
+        $properties = array(
+            'id'         => $id,
+            'attributes' => $propertyArray
+        );
+
+        $response = $this->soapClient->request('ModifyDomainRequest', array(), $properties);
+
+        $domain = $response->children()->ModifyDomainResponse->children();
+        return \Zimbra\ZCS\Entity\Domain::createFromXml($domain[0]);
+    }
+
     public function deleteDomain($domain_id)
     {
         $attributes = array();

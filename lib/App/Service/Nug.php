@@ -76,6 +76,23 @@ class Nug
     }
 
     /**
+     * Updates a Domain in the Nug webservice
+     * @param \Zimbra\ZCS\Entity\Domain $domain The data to be saved, should be a json decoded object received as payload from a POST request
+     * @return array
+     */
+    public function updateDomain(\Zimbra\ZCS\Entity\Domain $domain)
+    {
+        $domain->setValidator($this->app['validator']);
+        $domain->validate();
+
+        // Create a new one in the webservice
+        $newDomain = $this->_getZimbraDomainAdmin()->updateDomain($domain);
+        var_dump($newDomain);die;
+
+        return  $this->_prepareDomain($newDomain);
+    }
+
+    /**
      * Deletes a Domain from the Nug webservice
      * @param string $domain_id
      */
