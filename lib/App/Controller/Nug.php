@@ -33,6 +33,7 @@ class Nug
         $this->controllers->get   ('/domain/{domain_id}/', array($this, '_domainGetDetail'));
         $this->controllers->put   ('/domain/{domain_id}/', array($this, '_domainUpdate'));
         $this->controllers->delete('/domain/{domain_id}/', array($this, '_domainDelete'));
+        $this->controllers->get   ('/domain/{domain_id}/account/', array($this, '_domainGetAccountCollection'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -56,7 +57,7 @@ class Nug
     /**
      * Returns the response to GET /domain/{domain_id}/
      * which returns the details of a domain identified by $domain_id
-     * @param integer $domain_id
+     * @param string $domain_id
      * @return \App\Rest\Response
      * @throws \App\Rest\Exception\ResourceNotFound
      */
@@ -144,5 +145,17 @@ class Nug
     {
         $cos = $this->nugService->getCos($cos_id);
         return new Rest\Response($cos);
+    }
+
+    /**
+     * Returns a list of accounts from a given domain identified by $domain_id
+     *
+     * @param string $domain_id
+     * @return \App\Rest\Response
+     */
+    public function _domainGetAccountCollection($domain_id)
+    {
+        $accounts = $this->nugService->getAccountListByDomain($domain_id);
+        return new Rest\Response($accounts);
     }
 }

@@ -12,16 +12,22 @@ class Nug
     protected $app;
 
     /**
-     * The Zimbra community server admin class
+     * The Zimbra community server admin class for Domains
      * @var \Zimbra\ZCS\Admin\Domain
      */
     protected $zimbraDomainAdmin;
 
     /**
-     * The Zimbra community server admin class
+     * The Zimbra community server admin class for Cos'es
      * @var \Zimbra\ZCS\Admin\Cos
      */
     protected $zimbraCosAdmin;
+
+    /**
+     * The Zimbra community server admin class for Accounts
+     * @var \Zimbra\ZCS\Admin\Account
+     */
+    protected $zimbraAccountAdmin;
 
     /**
      * Initializes properties
@@ -130,6 +136,24 @@ class Nug
     }
 
     /**
+     * Gets all accounts from the webservice that belong to a given domain
+     * @param $domain_id
+     */
+    public function getAccountListByDomain($domain_id)
+    {
+        $domain = $this->_getZimbraDomainAdmin()->getDomain($domain_id);
+        $accounts = $this->_getZimbraAccountAdmin()->getAccountListByDomain($domain->getName());
+
+        $accountList = array();
+        foreach($accounts as $account){
+            $preparedAccount = $this->_prepareAccount($account);
+            $accountList[] = $preparedAccount;
+        }
+
+        return $accountList;
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */
@@ -151,6 +175,18 @@ class Nug
             $this->zimbraCosAdmin = $this->app['zimbra_admin_cos'];
         }
         return $this->zimbraCosAdmin;
+    }
+
+    /**
+     * Gets the Zimbra Account admin from the DI container
+     * @return \Zimbra\ZCS\Admin\Account
+     */
+    protected function _getZimbraAccountAdmin()
+    {
+        if (!$this->zimbraAccountAdmin){
+            $this->zimbraAccountAdmin = $this->app['zimbra_admin_account'];
+        }
+        return $this->zimbraAccountAdmin;
     }
 
     /**
@@ -183,6 +219,18 @@ class Nug
     private function _prepareCos(\Zimbra\ZCS\Entity\Cos $cos)
     {
         $result = $cos->toArray();
+        return $result;
+    }
+
+    /**
+     * Transforms the response object from the Zimbra soap service into a
+     * usable array with only the parameters we need
+     * @param \Zimbra\ZCS\Entity\Account $account
+     * @return array
+     */
+    private function _prepareAccount(\Zimbra\ZCS\Entity\Account $account)
+    {
+        $result = $account->toArray();
         return $result;
     }
 

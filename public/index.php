@@ -58,6 +58,11 @@ $app['zimbra_admin_cos'] = function() use ($app){
     $zimbraCosAdmin->auth('admin', 'kl!tr34h');
     return $zimbraCosAdmin;
 };
+$app['zimbra_admin_account'] = function() use ($app){
+    $zimbraAccountAdmin = new \Zimbra\ZCS\Admin\Account('mail.webruimte.eu', 7071);
+    $zimbraAccountAdmin->auth('admin', 'kl!tr34h');
+    return $zimbraAccountAdmin;
+};
 
 // Mount controllers
 $app->mount('/nug', new App\Controller\Nug());
