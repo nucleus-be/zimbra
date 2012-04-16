@@ -42,6 +42,10 @@ class SoapClient
      */
     public function __construct($server, $port)
     {
+        if(isset($_GET['debug'])){
+            self::$debug = true;
+        }
+
         $this->curlHandle = curl_init();
         curl_setopt($this->curlHandle, CURLOPT_URL, "https://$server:$port/service/admin/soap");
         curl_setopt($this->curlHandle, CURLOPT_POST, TRUE);
@@ -161,7 +165,7 @@ class SoapClient
         $dom = new \DOMDocument('1.0');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
-        $dom->loadXML($xml);
+        @$dom->loadXML($xml);
         $output = $dom->saveXML();
         return $escape ? htmlentities($output, ENT_QUOTES, 'utf-8') : $output;
     }
