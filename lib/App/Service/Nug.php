@@ -100,6 +100,7 @@ class Nug
     /**
      * Deletes a Domain from the Nug webservice
      * @param string $domain_id
+     * @return bool
      */
     public function deleteDomain($domain_id)
     {
@@ -137,6 +138,7 @@ class Nug
     /**
      * Gets all accounts from the webservice that belong to a given domain
      * @param $domain_id
+     * @return array
      */
     public function getAccountListByDomain($domain_id)
     {
@@ -150,6 +152,21 @@ class Nug
         }
 
         return $accountList;
+    }
+
+    /**
+     * Creates a new account in the Nug webservice
+     * @param \Zimbra\ZCS\Entity\Account $account
+     * @return array
+     */
+    public function createAccount(\Zimbra\ZCS\Entity\Account $account)
+    {
+        $account->setValidator($this->app['validator']);
+        $account->validate();
+
+        // Create a new one in the webservice
+        $newAccount = $this->_getZimbraAccountAdmin()->createAccount($account);
+        return  $this->_prepareAccount($newAccount);
     }
 
     /**

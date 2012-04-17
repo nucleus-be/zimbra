@@ -28,12 +28,13 @@ class Nug
         $this->nugService = $this->app['service_nug'];
 
         // Domain actions
-        $this->controllers->get   ('/domain/',             array($this, '_domainGetCollection'));
-        $this->controllers->post  ('/domain/',             array($this, '_domainCreate'));
-        $this->controllers->get   ('/domain/{domain_id}/', array($this, '_domainGetDetail'));
-        $this->controllers->put   ('/domain/{domain_id}/', array($this, '_domainUpdate'));
-        $this->controllers->delete('/domain/{domain_id}/', array($this, '_domainDelete'));
+        $this->controllers->get   ('/domain/',                     array($this, '_domainGetCollection'));
+        $this->controllers->post  ('/domain/',                     array($this, '_domainCreate'));
+        $this->controllers->get   ('/domain/{domain_id}/',         array($this, '_domainGetDetail'));
+        $this->controllers->put   ('/domain/{domain_id}/',         array($this, '_domainUpdate'));
+        $this->controllers->delete('/domain/{domain_id}/',         array($this, '_domainDelete'));
         $this->controllers->get   ('/domain/{domain_id}/account/', array($this, '_domainGetAccountCollection'));
+        $this->controllers->post  ('/account/',                    array($this, '_accountCreate'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -157,5 +158,23 @@ class Nug
     {
         $accounts = $this->nugService->getAccountListByDomain($domain_id);
         return new Rest\Response($accounts);
+    }
+
+    /**
+     * Returns the response to PUT /account/
+     * which creates a new account
+     * @return \App\Rest\Response
+     */
+    public function _accountCreate()
+    {
+        $accountData = $this->app['request']->payload;
+        $accountEntity = \Zimbra\ZCS\Entity\Account::createFromJson($accountData);
+        $newAccountEntity = $this->nugService->createAccount($accountEntity);
+
+        return new Rest\Response(
+            array('account' => $newAccountEntity), // Response body, encoded as JSON
+            201, // Status code
+            array('Location' => $this->app['config.domain'] . '/nug/account/' . $newAccountEntity['id'] . '/') // Extra headers
+        );
     }
 }

@@ -89,6 +89,16 @@ abstract class Entity
         // Get the properties from the datamap
         $properties = self::getDataMap();
 
+        // Split off the attributes
+        $attributes = array();
+        foreach($properties as $key => &$prop){
+            $stripped = str_replace('@', '', $key);
+            if($key !== $stripped) {
+                $attributes[$stripped] = $prop;
+                unset($properties[$key]);
+            }
+        }
+
         // Create dummy entity
         $class = get_called_class();
         $entity = new $class(array());
@@ -106,6 +116,16 @@ abstract class Entity
             $xpathQuery = sprintf("a[@n='%s']", $zimbraKey);
             $results = $xml->xpath($xpathQuery);
             $entity->$setter(count($results) > 0 ? (string)$results[0] : null);
+        }
+
+        // Set the attributes to entity properties
+        foreach($attributes as $zimbraAttribute => $attribute){
+            $setter = 'set'.ucfirst($attribute);
+            if(!method_exists($entity, $setter)){
+                throw new \Exception(sprintf('Cannot create entity from XML, property %s on the %s entity does not exist!', $property, $class));
+            }
+
+            $entity->$setter((string)$xml->attributes()->$zimbraAttribute ?: null);
         }
 
         // Set the source
@@ -166,7 +186,7 @@ abstract class Entity
     /**
      * Returns an array representation of this Entity that can be
      * used to communicate with the Zimbra ZCS server, the array keys
-     * used are all zimbra property names
+     * used are all zimbra property names or attributes
      * @return array
      */
     public function toPropertyArray()
