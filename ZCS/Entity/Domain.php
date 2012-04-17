@@ -10,6 +10,7 @@ namespace Zimbra\ZCS\Entity;
 
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContext;
 
 class Domain extends \Zimbra\ZCS\Entity
 {
@@ -18,14 +19,14 @@ class Domain extends \Zimbra\ZCS\Entity
      * @property
      * @var string
      */
-    private $defaultCosId;
+    private $defaultCosId = null;
 
     /**
      * The name for this domain
      * @property
      * @var string
      */
-    private $name;
+    private $name = null;
 
     /**
      * Validation for the properties of this Entity
@@ -40,8 +41,14 @@ class Domain extends \Zimbra\ZCS\Entity
         $metadata->addPropertyConstraint('name', new Assert\NotBlank());
 
         // DefaultCosId should either be a non-blank string or NULL
-        // TODO: NotBlank does not allow NULL!
-        $metadata->addPropertyConstraint('defaultCosId', new Assert\NotBlank());
+        $metadata->addConstraint(new Assert\Callback(array('_validateDefaultCosId')));
+    }
+
+    public function _validateDefaultCosId(ExecutionContext $context)
+    {
+        if(!is_null($this->getDefaultCosId()) && '' == trim($this->getDefaultCosId())){
+            $context->addViolationAtPath('defaultCosId', 'defaultCosId must be null or a valid Cos ID', array(), $this->getDefaultCosId());
+        }
     }
 
     /**
