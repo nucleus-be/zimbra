@@ -8,6 +8,10 @@
 
 namespace Zimbra\ZCS\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContext;
+
 class Account extends \Zimbra\ZCS\Entity
 {
     /**
@@ -36,7 +40,7 @@ class Account extends \Zimbra\ZCS\Entity
      * @property
      * @var string
      */
-    private $accountstatus;
+    private $accountstatus = "active";
 
     /**
      * The username
@@ -46,23 +50,58 @@ class Account extends \Zimbra\ZCS\Entity
     private $username;
 
     /**
+     * The password for this account
+     * @property
+     * @var string
+     */
+    private $password;
+
+    /**
+     * The host for the account AKA domain
+     * @property
+     * @var string
+     */
+    private $host;
+
+    /**
      * Extra field mapping
      * @var array
      */
     protected static $_datamap = array(
-        'cn' => 'name',
-        'uid' => 'username',
+        '@name' => 'name', // @ prefix indicates an attribute
         'displayName' => 'displayname',
+        'uid' => 'username',
+        'userPassword' => 'password',
+        'zimbraMailHost' => 'host',
         'zimbraAccountStatus' => 'accountstatus',
         'zimbraMailQuota' => 'mailquota'
     );
 
     /**
+     * Validation for the properties of this Entity
+     *
+     * @static
+     * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
+     */
+    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        // the actual emailaddress should never be NULL or a blank string
+        $metadata->addPropertyConstraint('name', new Assert\NotNull());
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank());
+
+        // password should never be NULL or a blank string
+        $metadata->addPropertyConstraint('password', new Assert\NotNull());
+        $metadata->addPropertyConstraint('password', new Assert\NotBlank());
+    }
+
+    /**
      * @param String $name
+     * @return \Zimbra\ZCS\Entity\Account
      */
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -129,10 +168,12 @@ class Account extends \Zimbra\ZCS\Entity
 
     /**
      * @param string $username
+     * @return \Zimbra\ZCS\Entity\Account
      */
     public function setUsername($username)
     {
         $this->username = $username;
+        return $this;
     }
 
     /**
@@ -141,5 +182,41 @@ class Account extends \Zimbra\ZCS\Entity
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * @param string $password
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $host
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
     }
 }

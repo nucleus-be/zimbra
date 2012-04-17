@@ -38,4 +38,35 @@ class Account
         return $results;
     }
 
+    /**
+     * Creates a new account in the ZCS soap webservice
+     * @param \Zimbra\ZCS\Entity\Account $account
+     * @return \Zimbra\ZCS\Entity
+     */
+    public function createAccount(\Zimbra\ZCS\Entity\Account $account)
+    {
+        // Domain properties
+        $propertyArray = $account->toPropertyArray();
+        $name = $propertyArray['@name'];
+        $pass = $propertyArray['userPassword'];
+
+        // Do not send these attributes
+        unset($propertyArray['zimbraId']);
+        unset($propertyArray['@name']);
+        unset($propertyArray['cn']);
+        unset($propertyArray['uid']);
+        unset($propertyArray['userPassword']);
+
+        $properties = array(
+            'name'       => $name,
+            'password'   => $pass,
+            'attributes' => $propertyArray
+        );
+
+        $response = $this->soapClient->request('CreateAccountRequest', array(), $properties);
+
+        $account = $response->children()->CreateAccountResponse->children();
+        return \Zimbra\ZCS\Entity\Account::createFromXml($account[0]);
+    }
+
 }
