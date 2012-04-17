@@ -15,7 +15,7 @@ class InvalidEntity extends \Zimbra\ZCS\Exception
         parent::__construct($message, $code, $previous);
     }
 
-    public function getViolations()
+    public function getErrors()
     {
         $violations = array();
         foreach($this->violations as $violation){
