@@ -93,7 +93,6 @@ class Nug
 
         // Create a new one in the webservice
         $newDomain = $this->_getZimbraDomainAdmin()->updateDomain($domain);
-        var_dump($newDomain);die;
 
         return  $this->_prepareDomain($newDomain);
     }
