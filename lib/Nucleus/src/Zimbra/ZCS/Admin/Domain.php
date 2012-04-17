@@ -107,6 +107,11 @@ class Domain
         return \Zimbra\ZCS\Entity\Domain::createFromXml($domain[0]);
     }
 
+    /**
+     * Removes a domain from the ZCS webservice
+     * @param string $domain_id
+     * @return bool
+     */
     public function deleteDomain($domain_id)
     {
         $attributes = array();
