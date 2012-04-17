@@ -9,6 +9,33 @@ namespace Zimbra\ZCS\Admin;
 class Account
     extends \Zimbra\ZCS\Admin
 {
+    /**
+     * Fetches a single account from the webservice and returns it
+     * as a \Zimbra\ZCS\Entity\Account object
+     * @param string $account
+     * @param string $by
+     * @param array $attrs
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function getAccount($account, $by = 'id', $attrs = array())
+    {
+        $attributes = array();
+        if (!empty($attrs)) {
+            $attributes['attrs'] = implode(',', $attrs);
+        }
+
+        $params = array(
+            'account' => array(
+                '_'  => $account,
+                'by' => $by,
+            )
+        );
+
+        $response = $this->soapClient->request('GetAccountRequest', $attributes, $params);
+        $accounts = $response->children()->GetAccountResponse->children();
+
+        return \Zimbra\ZCS\Entity\Account::createFromXml($accounts[0]);
+    }
 
     /**
      * Fetches all accounts from the soap webservice and returns them as an array
