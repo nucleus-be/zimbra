@@ -155,6 +155,17 @@ class Nug
     }
 
     /**
+     * Gets a single Nug account
+     * @param string $account_id
+     * @return array
+     */
+    public function getAccount($account_id)
+    {
+        $account = $this->_getZimbraAccountAdmin()->getAccount($account_id);
+        return  $this->_prepareAccount($account);
+    }
+
+    /**
      * Creates a new account in the Nug webservice
      * @param \Zimbra\ZCS\Entity\Account $account
      * @return array

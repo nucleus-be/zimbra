@@ -34,6 +34,9 @@ class Nug
         $this->controllers->put   ('/domain/{domain_id}/',         array($this, '_domainUpdate'));
         $this->controllers->delete('/domain/{domain_id}/',         array($this, '_domainDelete'));
         $this->controllers->get   ('/domain/{domain_id}/account/', array($this, '_domainGetAccountCollection'));
+
+        // Account actions
+        $this->controllers->get   ('/account/{account_id}/',       array($this, '_accountGetDetail'));
         $this->controllers->post  ('/account/',                    array($this, '_accountCreate'));
 
         // Class of service actions
@@ -158,6 +161,19 @@ class Nug
     {
         $accounts = $this->nugService->getAccountListByDomain($domain_id);
         return new Rest\Response($accounts);
+    }
+
+    /**
+     * Returns the response to GET /account/{account_id}/
+     * which returns the details of an account identified by $account_id
+     * @param string $domain_id
+     * @return \App\Rest\Response
+     * @throws \App\Rest\Exception\ResourceNotFound
+     */
+    public function _accountGetDetail($account_id)
+    {
+        $account = $this->nugService->getAccount($account_id);
+        return new Rest\Response($account);
     }
 
     /**
