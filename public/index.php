@@ -14,8 +14,9 @@ $app['debug'] = true;
 $app['config.domain'] = "http://api.chris.dev.nucleus.be";
 
 // Register the App namespace to the autoloader
-$app['autoloader']->registerNamespace('App', APP_ROOT.'/lib');
+$app['autoloader']->registerNamespace('App',    APP_ROOT.'/lib');
 $app['autoloader']->registerNamespace('Zimbra', APP_ROOT.'/lib/Nucleus/src/');
+$app['autoloader']->registerNamespace('Util',   APP_ROOT.'/lib/Nucleus/src/');
 
 // Register the validation service
 $app->register(new Silex\Provider\ValidatorServiceProvider(), array(
@@ -32,6 +33,15 @@ $app->error(function (\Exception $e, $code) {
     // we handle it with our Rest Response class
     if($code == 500) {
         return \App\Rest\Response::fromException($e, $code);
+    }
+});
+
+// Validate data in the Request
+$app->before(function(Request $request){
+    // Validate JSON syntax/data
+    if(stristr($request->getContentType(), 'json')){
+        $data = \Util\JSON::decode($request->getContent());
+        $request->payload = $data;
     }
 });
 

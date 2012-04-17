@@ -75,7 +75,7 @@ class Nug
      */
     public function _domainUpdate($domain_id)
     {
-        $domainData = json_decode($this->app['request']->getContent());
+        $domainData = $this->app['request']->payload;
         $domainEntity = \Zimbra\ZCS\Entity\Domain::createFromJson($domainData);
         $domainEntity->setId($domain_id);
 
@@ -95,7 +95,7 @@ class Nug
      */
     public function _domainCreate()
     {
-        $domainData = json_decode($this->app['request']->getContent());
+        $domainData = $this->app['request']->payload;
         $domainEntity = \Zimbra\ZCS\Entity\Domain::createFromJson($domainData);
         $newDomainEntity = $this->nugService->createDomain($domainEntity);
 
