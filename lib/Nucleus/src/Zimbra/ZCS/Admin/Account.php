@@ -96,4 +96,20 @@ class Account
         return \Zimbra\ZCS\Entity\Account::createFromXml($account[0]);
     }
 
+    /**
+     * Removes an account from the ZCS webservice
+     * @param string $account_id
+     * @return bool
+     */
+    public function deleteAccount($account_id)
+    {
+        $attributes = array();
+
+        $response = $this->soapClient->request('DeleteAccountRequest', $attributes, array(
+            'id' => $account_id
+        ));
+
+        return true;
+    }
+
 }

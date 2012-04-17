@@ -181,6 +181,17 @@ class Nug
     }
 
     /**
+     * Deletes an Account from the Nug webservice
+     * @param string $account_id
+     * @return bool
+     */
+    public function deleteAccount($account_id)
+    {
+        $result = $this->_getZimbraAccountAdmin()->deleteAccount($account_id);
+        return $result;
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */

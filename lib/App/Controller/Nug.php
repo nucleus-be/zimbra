@@ -37,6 +37,7 @@ class Nug
 
         // Account actions
         $this->controllers->get   ('/account/{account_id}/',       array($this, '_accountGetDetail'));
+        $this->controllers->delete('/account/{account_id}/',       array($this, '_accountDelete'));
         $this->controllers->post  ('/account/',                    array($this, '_accountCreate'));
 
         // Class of service actions
@@ -63,7 +64,6 @@ class Nug
      * which returns the details of a domain identified by $domain_id
      * @param string $domain_id
      * @return \App\Rest\Response
-     * @throws \App\Rest\Exception\ResourceNotFound
      */
     public function _domainGetDetail($domain_id)
     {
@@ -143,7 +143,6 @@ class Nug
      * which returns the details of a COS identified by $cos_id
      * @param integer $cos_id
      * @return \App\Rest\Response
-     * @throws \App\Rest\Exception\ResourceNotFound
      */
     public function _cosGetDetail($cos_id)
     {
@@ -166,9 +165,8 @@ class Nug
     /**
      * Returns the response to GET /account/{account_id}/
      * which returns the details of an account identified by $account_id
-     * @param string $domain_id
+     * @param string $account_id
      * @return \App\Rest\Response
-     * @throws \App\Rest\Exception\ResourceNotFound
      */
     public function _accountGetDetail($account_id)
     {
@@ -192,5 +190,21 @@ class Nug
             201, // Status code
             array('Location' => $this->app['config.domain'] . '/nug/account/' . $newAccountEntity['id'] . '/') // Extra headers
         );
+    }
+
+    /**
+     * Returns the response to DELETE /account/{account_id}
+     * which removes an existing account
+     * @param $account_id
+     * @return \App\Rest\Response
+     */
+    public function _accountDelete($account_id)
+    {
+        $result = $this->nugService->deleteAccount($account_id);
+
+        return new Rest\Response(array(
+            'success' => $result,
+            'message' => 'The account has been successfully deleted'
+        ));
     }
 }
