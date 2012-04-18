@@ -1,0 +1,66 @@
+@import 'default.css';
+
+table.field-list {
+    font-size: 12px;
+    border-top: 1px dotted #ccc !important
+}
+
+table.field-list th {
+    background-color: transparent;
+    color: #4f8716;
+}
+
+table.field-list td,
+table.field-list th {
+    border-bottom: 1px dotted #ccc !important
+}
+table.field-list td {
+    padding-left: 0;
+    padding-right: 0
+}
+
+table.field-list .field th.field-name {
+    width: 120px
+}
+table.field-list .field td.field-body {
+    width: 780px
+}
+
+table.field-list table.field-list {
+    border-top: 0px !important;
+}
+table.field-list table.field-list th {
+    color: #666
+}
+table.field-list table.field-list th {
+    padding-left: 0
+}
+table.field-list table.field-list tr:last-child td,
+table.field-list table.field-list tr:last-child th {
+    border-bottom: 0px !important
+}
+
+dl.method dd {
+    margin-top: 8px;
+}
+
+tt.deschttpmethod {
+    background-color: #666;
+    color: white;
+    border-radius: 3px;
+    font-weight: bold;
+    padding: 2px 2px 2px 8px
+}
+
+tt.deschttpurl {
+    padding-left: 8px
+}
+
+a.headerlink {
+    background-color: #74b038;
+    color: #ffffff
+}
+a.headerlink:hover {
+    background-color: #ffffff;
+    color: #74b038
+}
