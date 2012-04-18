@@ -51,7 +51,7 @@ class Cos
         $response = $this->soapClient->request('GetCosRequest', $attributes, $params);
         $coslist = $response->children()->GetCosResponse->children()->cos;
 
-        return ($coslist);
+        return \Zimbra\ZCS\Entity\Cos::createFromXml($coslist);
     }
 
 }
