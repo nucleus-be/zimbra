@@ -17,7 +17,7 @@ Usage
 
 .. http:method:: GET /nug/domain/
 
-   Retrieve list all domains available in the system
+   Retrieve a list of all domains available on the server
 
    :response OK 200: succesfully retrieved a list of domains
 
@@ -26,69 +26,46 @@ Usage
 
          GET /nug/domain/ HTTP/1.1
          Host: http://data.nucleus.be
+         Connection: close
 
    :Response:
 
       .. code-block:: json
 
-         [
-             {
-                 "defaultCosId": null,
-                 "id": "d60c6cbc-6c53-456e-ad3d-3b75117cbc64",
-                 "name": "chris.be",
-                 "subresources": {
-                     "account_list": "/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/account/",
-                     "detail": "/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/"
-                 }
-             },
-             {
-                 "defaultCosId": null,
-                 "id": "29cf77b1-45d2-4464-b4e1-6e995eac3128",
-                 "name": "jan.be",
-                 "subresources": {
-                     "account_list": "/nug/domain/29cf77b1-45d2-4464-b4e1-6e995eac3128/account/",
-                     "detail": "/nug/domain/29cf77b1-45d2-4464-b4e1-6e995eac3128/"
-                 }
-             },
-             {
-                 "defaultCosId": "e00428a1-0c00-11d9-836a-000d93afea2a",
-                 "id": "9f61f68f-fcd2-460e-8098-de01d250b5df",
-                 "name": "mail.webruimte.eu",
-                 "subresources": {
-                     "account_list": "/nug/domain/9f61f68f-fcd2-460e-8098-de01d250b5df/account/",
-                     "default_cos": "/nug/cos/e00428a1-0c00-11d9-836a-000d93afea2a",
-                     "detail": "/nug/domain/9f61f68f-fcd2-460e-8098-de01d250b5df/"
-                 }
-             },
-             {
-                 "defaultCosId": null,
-                 "id": "48d08aa6-6628-44c3-a988-9370c74a8c56",
-                 "name": "mattias.be",
-                 "subresources": {
-                     "account_list": "/nug/domain/48d08aa6-6628-44c3-a988-9370c74a8c56/account/",
-                     "detail": "/nug/domain/48d08aa6-6628-44c3-a988-9370c74a8c56/"
-                 }
-             },
-             {
-                 "defaultCosId": "e00428a1-0c00-11d9-836a-000d93afea2a",
-                 "id": "156fe7f9-bb1e-4134-9bc4-47177ecad66d",
-                 "name": "nucleus.be",
-                 "subresources": {
-                     "account_list": "/nug/domain/156fe7f9-bb1e-4134-9bc4-47177ecad66d/account/",
-                     "default_cos": "/nug/cos/e00428a1-0c00-11d9-836a-000d93afea2a",
-                     "detail": "/nug/domain/156fe7f9-bb1e-4134-9bc4-47177ecad66d/"
-                 }
+         [{
+             "id": "d60c6cbc-6c53-456e-ad3d-3b75117cbc64",
+             "defaultCosId": null,
+             "name": "chris.be",
+             "uri": "\/nug\/domain\/d60c6cbc-6c53-456e-ad3d-3b75117cbc64\/",
+             "subresources": {
+                 "account_list": "\/nug\/domain\/d60c6cbc-6c53-456e-ad3d-3b75117cbc64\/account\/"
              }
-         ]
+         }, {
+             "id": "9f61f68f-fcd2-460e-8098-de01d250b5df",
+             "defaultCosId": "e00428a1-0c00-11d9-836a-000d93afea2a",
+             "name": "mail.webruimte.eu",
+             "uri": "\/nug\/domain\/9f61f68f-fcd2-460e-8098-de01d250b5df\/",
+             "subresources": {
+                 "account_list": "\/nug\/domain\/9f61f68f-fcd2-460e-8098-de01d250b5df\/account\/",
+                 "default_cos": "\/nug\/cos\/e00428a1-0c00-11d9-836a-000d93afea2a"
+             }
+         }, {
+             "id": "156fe7f9-bb1e-4134-9bc4-47177ecad66d",
+             "defaultCosId": "e00428a1-0c00-11d9-836a-000d93afea2a",
+             "name": "nucleus.be",
+             "uri": "\/nug\/domain\/156fe7f9-bb1e-4134-9bc4-47177ecad66d\/",
+             "subresources": {
+                 "account_list": "\/nug\/domain\/156fe7f9-bb1e-4134-9bc4-47177ecad66d\/account\/",
+                 "default_cos": "\/nug\/cos\/e00428a1-0c00-11d9-836a-000d93afea2a"
+             }
+         }]
 
 .. http:method:: POST /nug/domain/
 
-   Create a new domain on the NUG server, the data should be sent as a JSON encoded object
+   Create a new domain on the NUG server. The data should be sent as a JSON encoded object
    in the Request body.
 
-   .. note:: Make sure to also set the content type to ``application/json`` so the REST API will know how to decode your request data
-
-   :response 201: A domain was successfully created
+   :response Created 201: A domain was successfully created
 
    :Request:
       .. code-block:: http
@@ -106,15 +83,12 @@ Usage
             "defaultCosId" : "a8f379c0-6a0e-48bf-98c7-3e7facb294d3"
          }
 
-      These are the properties that can be sent over to the DATA API, just make sure you always send at least the required properties. If
-      any property isn't valid the server will return a response with information on the missing/wrong properties.
-
       ============= ============ ====
       *Properties*
       ------------- ------------ ----
       Name          Type         Info
       ============= ============ ====
-      name          string       required
+      name          string       **required** The FQDN of the domain
       defaultCosId  string(id)   can be the ID of a COS or ``null``, if ommitted from the request data it will be set to ``null``
       ============= ============ ====
 
@@ -135,66 +109,142 @@ Usage
 
 .. http:method:: GET /nug/domain/{id}/
 
-   :arg string {id}: The domain id on the NUG server
+   Retrieve detail info on a domain from the NUG server identified by the ``{id}`` path argument.
 
-   Retrieve detail info on a domain from the NUG server
+   :arg string {id}: The domain id on the NUG server
 
    :Request:
       .. code-block:: http
 
          GET /nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/ HTTP/1.1
          Host: http://data.nucleus.be
+         Connection: close
 
    :Response:
       .. code-block:: json
 
          {
-             "defaultCosId": null,
              "id": "d60c6cbc-6c53-456e-ad3d-3b75117cbc64",
+             "defaultCosId": null,
              "name": "chris.be",
+             "uri": "\/nug\/domain\/d60c6cbc-6c53-456e-ad3d-3b75117cbc64\/",
              "subresources": {
-                 "account_list": "/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/account/",
-                 "detail": "/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/"
+                 "account_list": "\/nug\/domain\/d60c6cbc-6c53-456e-ad3d-3b75117cbc64\/account\/"
              }
          }
 
-.. http:method:: GET /nug/domain/{id}/account/
+.. http:method:: PUT /nug/domain/{id}/
+
+   Update an existing domain on the NUG server identified by the ``{id}`` path argument. The data should be sent as a JSON encoded object
+   in the request body.
 
    :arg string {id}: The domain id on the NUG server
 
-   Retrieve a list of accounts created for the domain identified by ``{id}``
+   :response OK 200: The domain was successfully updated
 
    :Request:
       .. code-block:: http
 
-         GET /nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/account/ HTTP/1.1
+         PUT /nug/domain/4d9c4fbb-4c98-43b8-a10e-21c0959397a7/ HTTP/1.1
          Host: http://data.nucleus.be
+         Content-type: application/json; charset=UTF-8
+         Content-length: 123456
+         Connection: close
+
+      .. code-block:: json
+
+         {
+            "defaultCosId" : "a8f379c0-6a0e-48bf-98c7-3e7facb294d3"
+         }
+
+      ============= ============ ====
+      *Properties*
+      ------------- ------------ ----
+      Name          Type         Info
+      ============= ============ ====
+      defaultCosId  string(id)   can be the ID of a COS or ``null``, if ommitted from the request data it will be set to ``null``
+      ============= ============ ====
+
+      .. note:: A domain's ``name`` is immutable and cannot be changed! If you add it to the request JSON data it'll be ignored.
 
    :Response:
       .. code-block:: json
 
-         [
-             {
-                 "accountstatus": "active",
-                 "displayname": "Chris Ramakers",
-                 "host": "mail.webruimte.eu",
-                 "id": "d1239eef-9a14-4f10-97f4-059da31d4190",
-                 "mailquota": "524288000",
-                 "name": "info2@chris.be",
-                 "password": "VALUE-BLOCKED",
-                 "username": "info2"
-             },
-             {
-                 "accountstatus": "active",
-                 "displayname": "Chris Ramakers",
-                 "host": "mail.webruimte.eu",
-                 "id": "cbc6c3f4-8a6c-4403-b8c6-9aa8400bc44c",
-                 "mailquota": "524288000",
-                 "name": "info@chris.be",
-                 "password": "VALUE-BLOCKED",
-                 "username": "info"
+         {
+             "domain": {
+                 "id": "4d9c4fbb-4c98-43b8-a10e-21c0959397a7",
+                 "defaultCosId": "a8f379c0-6a0e-48bf-98c7-3e7facb294d3",
+                 "name": "domain.com",
+                 "uri": "\/nug\/domain\/4d9c4fbb-4c98-43b8-a10e-21c0959397a7\/",
+                 "subresources": {
+                     "account_list": "\/nug\/domain\/4d9c4fbb-4c98-43b8-a10e-21c0959397a7\/account\/"
+                 }
              }
-         ]
+         }
+
+.. http:method:: DELETE /nug/domain/{id}/
+
+   DELETE an existing domain on the NUG server identified by the ``{id}`` path argument.
+
+   :arg string {id}: The domain id on the NUG server
+
+   :response OK 200: The domain was successfully deleted
+
+   :Request:
+      .. code-block:: http
+
+         DELETE /nug/domain/4d9c4fbb-4c98-43b8-a10e-21c0959397a7/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+      .. note:: All domain account should be deleted when a domain is deleted, else the request will return an error with the message
+         that the domain isn't empty.
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "success": true,
+             "message": "The domain has been successfully deleted"
+         }
+
+.. http:method:: GET /nug/domain/{id}/account/
+
+   Retrieve a list of accounts created for the domain identified by the ``{id}`` path argument.
+
+   :arg string {id}: The domain id on the NUG server
+
+   :Request:
+      .. code-block:: http
+
+         GET /nug/domain/156fe7f9-bb1e-4134-9bc4-47177ecad66d/account/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+   :Response:
+      .. code-block:: json
+
+         [{
+             "id": "8282b006-cc43-4cde-86e8-87a4cf1c5f19",
+             "name": "chris@nucleus.be",
+             "displayname": null,
+             "username": "chris",
+             "password": "VALUE-BLOCKED",
+             "host": "mail.webruimte.eu",
+             "accountstatus": "active",
+             "mailquota": "524288000",
+             "uri": "\/nug\/account\/8282b006-cc43-4cde-86e8-87a4cf1c5f19\/"
+         }, {
+             "id": "d8114538-f9cf-4448-9b40-349f7a652391",
+             "name": "info@nucleus.be",
+             "displayname": "Ramakers",
+             "username": "info",
+             "password": null,
+             "host": "mail.webruimte.eu",
+             "accountstatus": "active",
+             "mailquota": "524288000",
+             "uri": "\/nug\/account\/d8114538-f9cf-4448-9b40-349f7a652391\/"
+         }]
 
 Account Resource
 ----------------
@@ -206,73 +256,163 @@ Account Resource
    :displayname: the default display name used when sending mails (eg: Chris Ramakers)
    :username: the username used when logging in with this account
    :password: the password used when logging in with this account (obfuscated in all GET requests!)
-   :host: the hostname where the user needs to connect to when loggin in (to get his mail for example)
-   :accountstatus: the current account status (eg: active)
-   :mailquota: the remaining amount of bytes available before the storage quota is reached (eg: 52428800 = 500Mb)
+   :host: the hostname of the server the user needs to connect to when logging in (to get his mail for example)
+   :accountstatus: the current account status (options: active, closed, locked, pending, maintenance)
+   :mailquota: the remaining amount of bytes available before the storage quota is reached (eg: 1.048.576 bytes = 1Mb)
 
 Usage
 *****
 
 .. http:method:: GET /nug/account/
 
-   Retrieve a list of all available accounts in the system
+   Retrieve a list of all accounts in the system
 
    :Request:
       .. code-block:: http
 
          GET /nug/account/ HTTP/1.1
          Host: http://data.nucleus.be
+         Connection: closes
 
    :Response:
       .. code-block:: json
 
-         [
-             {
-                 "accountstatus": "active",
-                 "displayname": null,
-                 "host": "mail.webruimte.eu",
-                 "id": "18fb081f-8fcd-4843-ab97-a5f4ee97fc90",
-                 "mailquota": "524288000",
-                 "name": "admin@mail.webruimte.eu",
-                 "password": "VALUE-BLOCKED",
-                 "username": "admin"
-             },
-             {
-                 "accountstatus": "active",
-                 "displayname": "Chris Ramakers",
-                 "host": "mail.webruimte.eu",
-                 "id": "d16f387d-159d-4b37-a9bb-0bbff53ed7b6",
-                 "mailquota": "524288000",
-                 "name": "chris@nucleus.be",
-                 "password": "VALUE-BLOCKED",
-                 "username": "chris"
-             }
-         ]
+         [{
+             "id": "18fb081f-8fcd-4843-ab97-a5f4ee97fc90",
+             "name": "admin@mail.webruimte.eu",
+             "displayname": null,
+             "username": "admin",
+             "password": "VALUE-BLOCKED",
+             "host": "mail.webruimte.eu",
+             "accountstatus": "active",
+             "mailquota": "524288000",
+             "uri": "\/nug\/account\/18fb081f-8fcd-4843-ab97-a5f4ee97fc90\/"
+         }, {
+             "id": "7ab4e5f5-f6a4-47bb-be18-e12b4b092a67",
+             "name": "chris@mail.webruimte.eu",
+             "displayname": "Chris Ramakers",
+             "username": "chris",
+             "password": "VALUE-BLOCKED",
+             "host": "mail.webruimte.eu",
+             "accountstatus": "active",
+             "mailquota": "524288000",
+             "uri": "\/nug\/account\/7ab4e5f5-f6a4-47bb-be18-e12b4b092a67\/"
+         }, {
+             "id": "8282b006-cc43-4cde-86e8-87a4cf1c5f19",
+             "name": "chris@nucleus.be",
+             "displayname": null,
+             "username": "chris",
+             "password": "VALUE-BLOCKED",
+             "host": "mail.webruimte.eu",
+             "accountstatus": "active",
+             "mailquota": "524288000",
+             "uri": "\/nug\/account\/8282b006-cc43-4cde-86e8-87a4cf1c5f19\/"
+         }]
 
-.. http:method:: GET /nug/account/{id}/
+.. http:method:: POST /nug/account/
 
-   :arg string {id}: The account id on the NUG server
+   Create a new account on the server
 
-   Retrieve the details of a single account identified by the id passed in the ``{id}`` path argument.
+   .. note:: The name passed in the JSON data should contain a domain name that exists on the server!
 
    :Request:
       .. code-block:: http
 
-         GET /nug/account/d1239eef-9a14-4f10-97f4-059da31d4190/ HTTP/1.1
+         POST /nug/account/ HTTP/1.1
          Host: http://data.nucleus.be
+         Content-type: application/json; charset=UTF-8
+         Content-length: 123456
+         Connection: close
+
+      .. code-block:: json
+
+         {
+             "name"          : "sales@nucleus.be",
+             "displayname"   : "Nucleus Sales Dept.",
+             "password"      : "foobar",
+             "accountstatus" : "active",
+             "mailquota"     : 102400
+         }
+
+      ============= ============ ====
+      *Properties*
+      ------------- ------------ ----
+      Name          Type         Info
+      ============= ============ ====
+      name          string       **required** The full emailaddress for the new account (the domain must exist on the NUG server!)
+      displayname   string       The full name of the account user (eg: John Doe)
+      password      string       **required** The plain text password to use when logging in with the account
+      accountstatus string       The initial account status (options: active, closed, locked, pending, maintenance)
+      mailquota     integer      The maximum mailbox size in bytes (1.048.576 bytes = 1Mb). If this value is omitted the domain default COS will be applied.
+      ============= ============ ====
 
    :Response:
       .. code-block:: json
 
          {
-             "accountstatus": "active",
-             "displayname": "Chris Ramakers",
-             "host": "mail.webruimte.eu",
-             "id": "d1239eef-9a14-4f10-97f4-059da31d4190",
-             "mailquota": "524288000",
-             "name": "info2@chris.be",
+             "account": {
+                 "id": "e3380d28-ba9d-4704-bcf6-d48e163d1d1e",
+                 "name": "sales@nucleus.be",
+                 "displayname": "Nucleus Sales Dept.",
+                 "username": "sales",
+                 "password": "VALUE-BLOCKED",
+                 "host": "mail.webruimte.eu",
+                 "accountstatus": "active",
+                 "mailquota": "102400",
+                 "uri": "\/nug\/account\/e3380d28-ba9d-4704-bcf6-d48e163d1d1e\/"
+             }
+         }
+
+.. http:method:: GET /nug/account/{id}/
+
+   Retrieve the details of a single account identified by the  ``{id}`` path argument.
+
+   :arg string {id}: The account id on the NUG server
+
+   :Request:
+      .. code-block:: http
+
+         GET /nug/account/092dfe48-9503-4bbc-b891-1e4206b9b1cd/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "id": "092dfe48-9503-4bbc-b891-1e4206b9b1cd",
+             "name": "mattias@mail.webruimte.eu",
+             "displayname": "Mattias Geniar",
+             "username": "mattias",
              "password": "VALUE-BLOCKED",
-             "username": "info2"
+             "host": "mail.webruimte.eu",
+             "accountstatus": "active",
+             "mailquota": "524288000",
+             "uri": "\/nug\/account\/092dfe48-9503-4bbc-b891-1e4206b9b1cd\/"
+         }
+
+
+.. http:method:: DELETE /nug/account/{id}/
+
+   DELETE an existing account on the NUG server identified by the ``{id}`` path argument.
+
+   :arg string {id}: The account id on the NUG server
+
+   :response OK 200: The account was successfully deleted
+
+   :Request:
+      .. code-block:: http
+
+         DELETE /nug/account/092dfe48-9503-4bbc-b891-1e4206b9b1cd/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "success": true,
+             "message": "The account has been successfully deleted"
          }
 
 COS Resource
@@ -297,37 +437,39 @@ Usage
 
          GET /nug/cos/ HTTP/1.1
          Host: http://data.nucleus.be
+         Connection: close
 
    :Response:
       .. code-block:: json
 
-         [
-             {
-                 "id": "a8f379c0-6a0e-48bf-98c7-3e7facb294d3",
-                 "name": "Bronze"
-             },
-             {
-                 "id": "e00428a1-0c00-11d9-836a-000d93afea2a",
-                 "name": "default"
-             }
-         ]
+         [{
+             "id": "a8f379c0-6a0e-48bf-98c7-3e7facb294d3",
+             "name": "bronze",
+             "uri": "\/nug\/cos\/a8f379c0-6a0e-48bf-98c7-3e7facb294d3\/"
+         }, {
+             "id": "e00428a1-0c00-11d9-836a-000d93afea2a",
+             "name": "default",
+             "uri": "\/nug\/cos\/e00428a1-0c00-11d9-836a-000d93afea2a\/"
+         }]
 
 .. http:method:: GET /nug/cos/{id}/
 
-   :arg string {id}: The COS id on the NUG server
+   Retrieve the details about a specific COS identified by the  ``{id}`` path argument.
 
-   Retrieve the details about a specific COS from the NUG server
+   :arg string {id}: The COS id on the NUG server
 
    :Request:
       .. code-block:: http
 
          GET /nug/cos/a8f379c0-6a0e-48bf-98c7-3e7facb294d3/ HTTP/1.1
          Host: http://data.nucleus.be
+         Connection: close
 
    :Response:
       .. code-block:: json
 
-          {
-              "id": "a8f379c0-6a0e-48bf-98c7-3e7facb294d3",
-              "name": "Bronze"
-          }
+         {
+             "id": "a8f379c0-6a0e-48bf-98c7-3e7facb294d3",
+             "name": "bronze",
+             "uri": "\/nug\/cos\/a8f379c0-6a0e-48bf-98c7-3e7facb294d3\/"
+         }
