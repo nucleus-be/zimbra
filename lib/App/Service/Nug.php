@@ -253,8 +253,8 @@ class Nug
     private function _prepareDomain(\Zimbra\ZCS\Entity\Domain $domain)
     {
         $result = $domain->toArray();
+        $result['uri'] = '/nug/domain/'.$domain->getId().'/';
         $result['subresources'] = array(
-            'detail'   => '/nug/domain/'.$domain->getId() . '/',
             'account_list' => '/nug/domain/'.$domain->getId() . '/account/'
         );
 
@@ -274,6 +274,7 @@ class Nug
     private function _prepareCos(\Zimbra\ZCS\Entity\Cos $cos)
     {
         $result = $cos->toArray();
+        $result['uri'] = '/nug/cos/'.$cos->getId().'/';
         return $result;
     }
 
@@ -286,6 +287,13 @@ class Nug
     private function _prepareAccount(\Zimbra\ZCS\Entity\Account $account)
     {
         $result = $account->toArray();
+        $result['uri'] = '/nug/account/'.$account->getId().'/';
+/*
+        $result['subresources'] = array(
+            'alias_list' => '/nug/account/'.$account->getId().'/alias/',
+            'forward_list' => '/nug/account/'.$account->getId().'/forward/'
+        );
+*/
         return $result;
     }
 
