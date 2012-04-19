@@ -5,6 +5,11 @@ This documentation describes the purpose and usage of the Nucleus DATA API, the 
 
 The API is built upon restful principles and talks JSON in request and response formats.
 
+Authenticating
+**************
+
+The authentication layer is not implemented as of yet.
+
 Request types
 *************
 

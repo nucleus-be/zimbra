@@ -7,5 +7,4 @@ Table of contents:
    :maxdepth: 2
 
    introduction
-   authentication
    modules
