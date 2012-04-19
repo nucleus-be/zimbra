@@ -109,6 +109,7 @@ class Account
         unset($propertyArray['cn']);
         unset($propertyArray['uid']);
         unset($propertyArray['userPassword']);
+        unset($propertyArray['zimbraMailHost']);
 
         $properties = array(
             'name'       => $name,
