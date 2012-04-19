@@ -88,7 +88,7 @@ class Nug
 
         return new Rest\Response(
             array('domain' => $updatedDomainEntity), // Response body, encoded as JSON
-            201, // Status code
+            200, // Status code
             array('Location' => $this->app['config.domain'] . '/nug/domain/' . $updatedDomainEntity['id'] . '/') // Extra headers
         );
     }
