@@ -40,6 +40,19 @@ table.field-list table.field-list tr:last-child th {
     border-bottom: 0px !important
 }
 
+table.docutils:not(.field-list) {
+    margin: 16px 0
+}
+table.docutils:not(.field-list) th em {
+    color: #666;
+    text-transform: uppercase;
+    font-style: normal;
+}
+table.docutils:not(.field-list) th {
+    padding-left: 0;
+    padding-right: 0
+}
+
 dl.method dd {
     margin-top: 8px;
 }
@@ -52,6 +65,9 @@ tt.deschttpmethod {
     padding: 2px 2px 2px 8px
 }
 
+tt {
+    font-size: 110% !important;
+}
 tt.deschttpurl {
     padding-left: 8px
 }

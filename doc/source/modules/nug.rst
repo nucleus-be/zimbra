@@ -19,12 +19,16 @@ Usage
 
    Retrieve list all domains available in the system
 
+   :response OK 200: succesfully retrieved a list of domains
+
    :Request:
       .. code-block:: http
 
-         GET http://data.nucleus.be/nug/domain/
+         GET /nug/domain/ HTTP/1.1
+         Host: http://data.nucleus.be
 
    :Response:
+
       .. code-block:: json
 
          [
@@ -77,6 +81,58 @@ Usage
              }
          ]
 
+.. http:method:: POST /nug/domain/
+
+   Create a new domain on the NUG server, the data should be sent as a JSON encoded object
+   in the Request body.
+
+   .. note:: Make sure to also set the content type to ``application/json`` so the REST API will know how to decode your request data
+
+   :response 201: A domain was successfully created
+
+   :Request:
+      .. code-block:: http
+
+         POST /nug/domain/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Content-type: application/json; charset=UTF-8
+         Content-length: 123456
+         Connection: close
+
+      .. code-block:: json
+
+         {
+            "name"         : "domain.com",
+            "defaultCosId" : "a8f379c0-6a0e-48bf-98c7-3e7facb294d3"
+         }
+
+      These are the properties that can be sent over to the DATA API, just make sure you always send at least the required properties. If
+      any property isn't valid the server will return a response with information on the missing/wrong properties.
+
+      ============= ============ ====
+      *Properties*
+      ------------- ------------ ----
+      Name          Type         Info
+      ============= ============ ====
+      name          string       required
+      defaultCosId  string(id)   can be the ID of a COS or ``null``, if ommitted from the request data it will be set to ``null``
+      ============= ============ ====
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "domain": {
+                 "id": "4d9c4fbb-4c98-43b8-a10e-21c0959397a7",
+                 "defaultCosId": "a8f379c0-6a0e-48bf-98c7-3e7facb294d3",
+                 "name": "domain.com",
+                 "uri": "\/nug\/domain\/4d9c4fbb-4c98-43b8-a10e-21c0959397a7\/",
+                 "subresources": {
+                     "account_list": "\/nug\/domain\/4d9c4fbb-4c98-43b8-a10e-21c0959397a7\/account\/"
+                 }
+             }
+         }
+
 .. http:method:: GET /nug/domain/{id}/
 
    :arg string {id}: The domain id on the NUG server
@@ -86,7 +142,8 @@ Usage
    :Request:
       .. code-block:: http
 
-         GET http://data.nucleus.be/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/
+         GET /nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/ HTTP/1.1
+         Host: http://data.nucleus.be
 
    :Response:
       .. code-block:: json
@@ -110,7 +167,8 @@ Usage
    :Request:
       .. code-block:: http
 
-         GET http://data.nucleus.be/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/account/
+         GET /nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/account/ HTTP/1.1
+         Host: http://data.nucleus.be
 
    :Response:
       .. code-block:: json
@@ -162,7 +220,8 @@ Usage
    :Request:
       .. code-block:: http
 
-         GET http://data.nucleus.be/nug/account/
+         GET /nug/account/ HTTP/1.1
+         Host: http://data.nucleus.be
 
    :Response:
       .. code-block:: json
@@ -199,7 +258,8 @@ Usage
    :Request:
       .. code-block:: http
 
-         GET http://data.nucleus.be/nug/account/d1239eef-9a14-4f10-97f4-059da31d4190/
+         GET /nug/account/d1239eef-9a14-4f10-97f4-059da31d4190/ HTTP/1.1
+         Host: http://data.nucleus.be
 
    :Response:
       .. code-block:: json
@@ -235,7 +295,8 @@ Usage
    :Request:
       .. code-block:: http
 
-         GET http://data.nucleus.be/nug/cos/
+         GET /nug/cos/ HTTP/1.1
+         Host: http://data.nucleus.be
 
    :Response:
       .. code-block:: json
@@ -260,7 +321,8 @@ Usage
    :Request:
       .. code-block:: http
 
-         GET http://data.nucleus.be/nug/cos/a8f379c0-6a0e-48bf-98c7-3e7facb294d3/
+         GET /nug/cos/a8f379c0-6a0e-48bf-98c7-3e7facb294d3/ HTTP/1.1
+         Host: http://data.nucleus.be
 
    :Response:
       .. code-block:: json
