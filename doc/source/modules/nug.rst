@@ -77,6 +77,67 @@ Usage
              }
          ]
 
+.. http:method:: GET /nug/domain/{id}/
+
+   :arg string {id}: The domain id on the NUG server
+
+   Retrieve detail info on a domain from the NUG server
+
+   :Request:
+      .. code-block:: http
+
+         GET http://data.nucleus.be/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "defaultCosId": null,
+             "id": "d60c6cbc-6c53-456e-ad3d-3b75117cbc64",
+             "name": "chris.be",
+             "subresources": {
+                 "account_list": "/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/account/",
+                 "detail": "/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/"
+             }
+         }
+
+.. http:method:: GET /nug/domain/{id}/account/
+
+   :arg string {id}: The domain id on the NUG server
+
+   Retrieve a list of accounts created for the domain identified by ``{id}``
+
+   :Request:
+      .. code-block:: http
+
+         GET http://data.nucleus.be/nug/domain/d60c6cbc-6c53-456e-ad3d-3b75117cbc64/account/
+
+   :Response:
+      .. code-block:: json
+
+         [
+             {
+                 "accountstatus": "active",
+                 "displayname": "Chris Ramakers",
+                 "host": "mail.webruimte.eu",
+                 "id": "d1239eef-9a14-4f10-97f4-059da31d4190",
+                 "mailquota": "524288000",
+                 "name": "info2@chris.be",
+                 "password": "VALUE-BLOCKED",
+                 "username": "info2"
+             },
+             {
+                 "accountstatus": "active",
+                 "displayname": "Chris Ramakers",
+                 "host": "mail.webruimte.eu",
+                 "id": "cbc6c3f4-8a6c-4403-b8c6-9aa8400bc44c",
+                 "mailquota": "524288000",
+                 "name": "info@chris.be",
+                 "password": "VALUE-BLOCKED",
+                 "username": "info"
+             }
+         ]
+
 Account Resource
 ----------------
 
@@ -93,6 +154,41 @@ Account Resource
 
 Usage
 *****
+
+.. http:method:: GET /nug/account/
+
+   Retrieve a list of all available accounts in the system
+
+   :Request:
+      .. code-block:: http
+
+         GET http://data.nucleus.be/nug/account/
+
+   :Response:
+      .. code-block:: json
+
+         [
+             {
+                 "accountstatus": "active",
+                 "displayname": null,
+                 "host": "mail.webruimte.eu",
+                 "id": "18fb081f-8fcd-4843-ab97-a5f4ee97fc90",
+                 "mailquota": "524288000",
+                 "name": "admin@mail.webruimte.eu",
+                 "password": "VALUE-BLOCKED",
+                 "username": "admin"
+             },
+             {
+                 "accountstatus": "active",
+                 "displayname": "Chris Ramakers",
+                 "host": "mail.webruimte.eu",
+                 "id": "d16f387d-159d-4b37-a9bb-0bbff53ed7b6",
+                 "mailquota": "524288000",
+                 "name": "chris@nucleus.be",
+                 "password": "VALUE-BLOCKED",
+                 "username": "chris"
+             }
+         ]
 
 .. http:method:: GET /nug/account/{id}/
 
