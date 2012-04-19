@@ -66,6 +66,32 @@ class Account
     }
 
     /**
+     * Fetches all accounts from the soap webservice and returns them as an array
+     * containing \Zimbra\ZCS\Entity\Cos objects
+     * @return array
+     */
+    public function getAccountList()
+    {
+        $attributes = array(
+            'applyCos' => 1,
+            'types' => 'accounts'
+        );
+        $params = array(
+            'query' => '!(uid=galsync)' // Exclude the galsync account for each domain
+        );
+
+        $response = $this->soapClient->request('SearchDirectoryRequest', $attributes, $params);
+        $accountList = $response->children()->SearchDirectoryResponse->children();
+
+        $results = array();
+        foreach ($accountList as $account) {
+            $results[] = \Zimbra\ZCS\Entity\Account::createFromXml($account);
+        }
+
+        return $results;
+    }
+
+    /**
      * Creates a new account in the ZCS soap webservice
      * @param \Zimbra\ZCS\Entity\Account $account
      * @return \Zimbra\ZCS\Entity

@@ -136,6 +136,23 @@ class Nug
     }
 
     /**
+     * Gets all accounts from the webservice
+     * @return array
+     */
+    public function getAccountList()
+    {
+        $accounts = $this->_getZimbraAccountAdmin()->getAccountList();
+
+        $accountList = array();
+        foreach($accounts as $account){
+            $preparedAccount = $this->_prepareAccount($account);
+            $accountList[] = $preparedAccount;
+        }
+
+        return $accountList;
+    }
+
+    /**
      * Gets all accounts from the webservice that belong to a given domain
      * @param $domain_id
      * @return array

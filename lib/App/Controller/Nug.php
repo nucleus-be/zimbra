@@ -36,9 +36,10 @@ class Nug
         $this->controllers->get   ('/domain/{domain_id}/account/', array($this, '_domainGetAccountCollection'));
 
         // Account actions
+        $this->controllers->get   ('/account/',                    array($this, '_accountGetCollection'));
+        $this->controllers->post  ('/account/',                    array($this, '_accountCreate'));
         $this->controllers->get   ('/account/{account_id}/',       array($this, '_accountGetDetail'));
         $this->controllers->delete('/account/{account_id}/',       array($this, '_accountDelete'));
-        $this->controllers->post  ('/account/',                    array($this, '_accountCreate'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -160,6 +161,18 @@ class Nug
     {
         $accounts = $this->nugService->getAccountListByDomain($domain_id);
         return new Rest\Response($accounts);
+    }
+
+    /**
+     * Returns the response to GET /account/
+     * which returns a collection of accounts from the ZCS server
+     *
+     * @return \App\Rest\Response
+     */
+    public function _accountGetCollection()
+    {
+        $domains = $this->nugService->getAccountList();
+        return new Rest\Response($domains);
     }
 
     /**
