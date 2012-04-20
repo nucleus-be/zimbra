@@ -124,6 +124,36 @@ class Account
     }
 
     /**
+     * Updates an account in the ZCS soap webservice
+     * @param \Zimbra\ZCS\Entity\Account $account
+     * @return \Zimbra\ZCS\Entity
+     */
+    public function updateAccount(\Zimbra\ZCS\Entity\Account $account)
+    {
+        // Account properties
+        $propertyArray = $account->toPropertyArray();
+        $id = $account->getId();
+
+        // Do not send these attributes
+        // The name is immutable and zimbraId shouldn't be sent when updating a domain!
+        unset($propertyArray['zimbraId']);
+        unset($propertyArray['@name']);
+        unset($propertyArray['uid']);
+        unset($propertyArray['userPassword']);
+        unset($propertyArray['zimbraMailHost']);
+
+        $properties = array(
+            'id'         => $id,
+            'attributes' => $propertyArray
+        );
+
+        $response = $this->soapClient->request('ModifyAccountRequest', array(), $properties);
+
+        $updatedAccount = $response->children()->ModifyAccountResponse->children();
+        return \Zimbra\ZCS\Entity\Account::createFromXml($updatedAccount[0]);
+    }
+
+    /**
      * Removes an account from the ZCS webservice
      * @param string $account_id
      * @return bool
