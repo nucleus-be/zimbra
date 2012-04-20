@@ -29,7 +29,7 @@ class Account extends \Zimbra\ZCS\Entity
     private $displayname;
 
     /**
-     * The mailquote of this account
+     * The mailquota of this account
      * @property
      * @var integer
      */
@@ -86,12 +86,47 @@ class Account extends \Zimbra\ZCS\Entity
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
         // the actual emailaddress should never be NULL or a blank string
-        $metadata->addPropertyConstraint('name', new Assert\NotNull());
-        $metadata->addPropertyConstraint('name', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('name', new Assert\NotNull(array(
+            'groups' => array('create')
+        )));
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
+            'groups' => array('create')
+        )));
+        $metadata->addPropertyConstraint('name', new Assert\MaxLength(array(
+            'groups' => array('create'),
+            'limit'  => 64
+        )));
 
         // password should never be NULL or a blank string
-        $metadata->addPropertyConstraint('password', new Assert\NotNull());
-        $metadata->addPropertyConstraint('password', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('password', new Assert\NotNull(array(
+            'groups' => array('create')
+        )));
+        $metadata->addPropertyConstraint('password', new Assert\NotBlank(array(
+            'groups' => array('create')
+        )));
+
+        // display name max length
+        $metadata->addPropertyConstraint('displayname', new Assert\MaxLength(array(
+            'groups' => array('create', 'update'),
+            'limit' => 250
+        )));
+
+        // mailquota numeric and > 0
+        $metadata->addPropertyConstraint('mailquota', new Assert\Type(array(
+            'groups' => array('create', 'update'),
+            'type' => 'integer'
+        )));
+        $metadata->addPropertyConstraint('mailquota', new Assert\Min(array(
+            'groups' => array('create', 'update'),
+            'limit' => 0
+        )));
+
+        // Account status has fixed set of options
+        $metadata->addPropertyConstraint('accountstatus', new Assert\Choice(array(
+            'groups' => array('create', 'update'),
+            'choices' => array('active', 'closed', 'locked', 'pending', 'maintenance')
+        )));
+
     }
 
     /**

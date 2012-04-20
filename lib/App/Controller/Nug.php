@@ -40,6 +40,7 @@ class Nug
         $this->controllers->post  ('/account/',                    array($this, '_accountCreate'));
         $this->controllers->get   ('/account/{account_id}/',       array($this, '_accountGetDetail'));
         $this->controllers->delete('/account/{account_id}/',       array($this, '_accountDelete'));
+        $this->controllers->put   ('/account/{account_id}/',       array($this, '_accountUpdate'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -202,6 +203,27 @@ class Nug
             array('account' => $newAccountEntity), // Response body, encoded as JSON
             201, // Status code
             array('Location' => $this->app['config.domain'] . '/nug/account/' . $newAccountEntity['id'] . '/') // Extra headers
+        );
+    }
+
+    /**
+     * Returns the response to POST /account/{id}/
+     * which updates an account identified by $id
+     * @param integer $account_id
+     * @return \App\Rest\Response
+     */
+    public function _accountUpdate($account_id)
+    {
+        $accountData = $this->app['request']->payload;
+        $accountEntity = \Zimbra\ZCS\Entity\Account::createFromJson($accountData);
+        $accountEntity->setId($account_id);
+
+        $updatedAccountEntity = $this->nugService->updateAccount($accountEntity);
+
+        return new Rest\Response(
+            array('account' => $updatedAccountEntity), // Response body, encoded as JSON
+            200, // Status code
+            array('Location' => $this->app['config.domain'] . $updatedAccountEntity['uri']) // Extra headers
         );
     }
 

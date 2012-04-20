@@ -190,10 +190,26 @@ class Nug
     public function createAccount(\Zimbra\ZCS\Entity\Account $account)
     {
         $account->setValidator($this->app['validator']);
-        $account->validate();
+        $account->validate('create');
 
         // Create a new one in the webservice
         $newAccount = $this->_getZimbraAccountAdmin()->createAccount($account);
+        return  $this->_prepareAccount($newAccount);
+    }
+
+    /**
+     * Updates an account in the Nug webservice
+     * @param \Zimbra\ZCS\Entity\Account $account The data to be saved, should be a json decoded object received as payload from a POST request
+     * @return array
+     */
+    public function updateAccount(\Zimbra\ZCS\Entity\Account $account)
+    {
+        $account->setValidator($this->app['validator']);
+        $account->validate('update');
+
+        // Update an account on the Zimbra server
+        $newAccount = $this->_getZimbraAccountAdmin()->updateAccount($account);
+
         return  $this->_prepareAccount($newAccount);
     }
 
