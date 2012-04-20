@@ -137,15 +137,16 @@ abstract class Entity
     /**
      * Validated this Entity according to the rules specified in self::loadValidatorMetadata
      * @throws \Zimbra\ZCS\Exception
+     * @param null $groups
      * @return \Symfony\Component\Validator\ConstraintViolationList
      */
-    public function validate()
+    public function validate($groups = null)
     {
         if(!$this->validator){
             throw new \Zimbra\ZCS\Exception('Cannot validate Entity, no validator present!');
         }
 
-        $violations = $this->validator->validate($this);
+        $violations = $this->validator->validate($this, $groups);
         if(count($violations) > 0) {
             throw new \Zimbra\ZCS\Exception\InvalidEntity($violations);
         }
