@@ -80,3 +80,21 @@ a.headerlink:hover {
     background-color: #ffffff;
     color: #74b038
 }
+
+div.body h1 {
+    background-color: #74b038;
+}
+div.body h2 {
+    background-color: #B7EC82;
+    color: #74b038;
+}
+div.body h3 {
+    background-color: #E5FDCD;
+    color: #74b038;
+}
+div.body h4,
+div.body h5,
+div.body h6 {
+    background-color: #FBFFF7;
+    color: #74b038;
+}

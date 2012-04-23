@@ -28,3 +28,11 @@ With ``POST`` and ``PUT`` requests you are required to send additional informati
 * You'll have to put a valid content-type (application/json) in your request
 * Data should be UTF-8 encoded
 * The JSON data should be sent in the request body as an encoded and valid json string, not as a query parameter or argument!
+
+Updating records, things you should know!
+*****************************************
+
+When sending a PUT request to the Data API to update an existing resource you are supposed to send all documented resource-properties in the request.
+Every property that is omitted from the PUT request is considered a ``null``-value and stored as such.
+
+eg: If you update an account and ommit the displayname it will be changed to ``null``!

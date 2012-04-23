@@ -391,6 +391,60 @@ Usage
              "uri": "\/nug\/account\/092dfe48-9503-4bbc-b891-1e4206b9b1cd\/"
          }
 
+.. http:method:: PUT /nug/account/{id}/
+
+   Update a single account identified by the  ``{id}`` path argument.
+
+   :arg string {id}: The account id on the NUG server
+
+   :response OK 200: The account was successfully updated
+
+   :Request:
+      .. code-block:: http
+
+         PUT /nug/account/7ab4e5f5-f6a4-47bb-be18-e12b4b092a67/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Content-type: application/json; charset=UTF-8
+         Content-length: 123456
+         Connection: close
+
+      .. code-block:: json
+
+         {
+             "displayname"   : "Chris Ramakers",
+             "accountstatus" : "active",
+             "mailquota"     : 524288000
+         }
+
+      ============= ============ ====
+      *Properties*
+      ------------- ------------ ----
+      Name          Type         Info
+      ============= ============ ====
+      displayname   string       The full name of the account user (eg: John Doe)
+      accountstatus string (req) The initial account status (options: active, closed, locked, pending, maintenance)
+      mailquota     integer      The maximum mailbox size in bytes (1.048.576 bytes = 1Mb)
+      ============= ============ ====
+
+      .. note:: When updating an account the accountstatus is a required parameter and cannot be ommitted in the request!
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "account": {
+                 "id": "7ab4e5f5-f6a4-47bb-be18-e12b4b092a67",
+                 "name": "chris@nucleus.be",
+                 "displayname": "Chris Ramakers",
+                 "username": "chris",
+                 "password": "VALUE-BLOCKED",
+                 "host": "mail.webruimte.eu",
+                 "accountstatus": "active",
+                 "mailquota": "524288000",
+                 "uri": "\/nug\/account\/7ab4e5f5-f6a4-47bb-be18-e12b4b092a67\/"
+             }
+         }
+
 
 .. http:method:: DELETE /nug/account/{id}/
 
