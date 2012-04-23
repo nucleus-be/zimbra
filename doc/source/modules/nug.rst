@@ -469,6 +469,27 @@ Usage
              "message": "The account has been successfully deleted"
          }
 
+.. http:method:: GET /nug/account/{id}/quota/
+
+   Retrieve the quota usage and limit of a single account identified by the  ``{id}`` path argument.
+
+   :arg string {id}: The account id on the NUG server
+
+   :Request:
+      .. code-block:: http
+
+         GET /nug/account/092dfe48-9503-4bbc-b891-1e4206b9b1cd/quota/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "limit":52428800,
+             "used":3743810
+         }
+
 COS Resource
 ------------
 
