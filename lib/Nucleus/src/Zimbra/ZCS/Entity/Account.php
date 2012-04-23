@@ -121,10 +121,13 @@ class Account extends \Zimbra\ZCS\Entity
             'limit' => 0
         )));
 
-        // Account status has fixed set of options
+        // Account status has fixed set of options and is required
         $metadata->addPropertyConstraint('accountstatus', new Assert\Choice(array(
             'groups' => array('create', 'update'),
             'choices' => array('active', 'closed', 'locked', 'pending', 'maintenance')
+        )));
+        $metadata->addPropertyConstraint('accountstatus', new Assert\NotNull(array(
+            'groups' => array('create', 'update')
         )));
 
     }
