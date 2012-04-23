@@ -41,6 +41,7 @@ class Nug
         $this->controllers->get   ('/account/{account_id}/',       array($this, '_accountGetDetail'));
         $this->controllers->delete('/account/{account_id}/',       array($this, '_accountDelete'));
         $this->controllers->put   ('/account/{account_id}/',       array($this, '_accountUpdate'));
+        $this->controllers->get   ('/account/{account_id}/quota/', array($this, '_accountGetQuota'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -241,5 +242,11 @@ class Nug
             'success' => $result,
             'message' => 'The account has been successfully deleted'
         ));
+    }
+
+    public function _accountGetQuota($account_id)
+    {
+        $result = $this->nugService->getAccountQuota($account_id);
+        return new Rest\Response($result);
     }
 }

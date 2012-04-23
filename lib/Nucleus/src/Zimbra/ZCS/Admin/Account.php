@@ -153,6 +153,18 @@ class Account
         return \Zimbra\ZCS\Entity\Account::createFromXml($updatedAccount[0]);
     }
 
+    public function getAccountQuotaUsage($account_id)
+    {
+        $response = $this->soapClient->request('GetQuotaUsageRequest');
+        $xpathQuery = sprintf("//*[local-name()='account' and @id='%s']", $account_id);
+        $record = $response->xpath($xpathQuery);
+
+        return array(
+            'limit' => (int)$record[0]['limit'],
+            'used'  => (int)$record[0]['used']
+        );
+    }
+
     /**
      * Removes an account from the ZCS webservice
      * @param string $account_id

@@ -225,6 +225,17 @@ class Nug
     }
 
     /**
+     * Gets the usage quota for a single account
+     * @param string $account_id
+     * @return array
+     */
+    public function getAccountQuota($account_id)
+    {
+        $usage = $this->_getZimbraAccountAdmin()->getAccountQuotaUsage($account_id);
+        return $usage;
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */
