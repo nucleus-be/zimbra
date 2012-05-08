@@ -57,4 +57,27 @@ class Alias
         return $results;
     }
 
+    /**
+     * Creates a new alias in the ZCS soap webservice
+     *
+     * NOTE: Due to the limitation of the webservice in ZCS we can't return the newly
+     * created alias or even the ID of the new alias, there is no way to identify the
+     * newly created alias unfortunately
+     *
+     * @param \Zimbra\ZCS\Entity\Alias $alias
+     * @throws \Zimbra\ZCS\Exception\Webservice
+     * @return boolean
+     */
+    public function createAlias(\Zimbra\ZCS\Entity\Alias $alias)
+    {
+        $properties = array(
+            'id'    => $alias->getTargetid(),
+            'alias' => $alias->getName()
+        );
+
+        $response = $this->soapClient->request('AddAccountAliasRequest', array(), $properties);
+        return true;
+    }
+
+
 }

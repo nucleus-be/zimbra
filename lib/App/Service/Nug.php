@@ -271,6 +271,20 @@ class Nug
     }
 
     /**
+     * Creates a new alias in the Nug webservice
+     * @param \Zimbra\ZCS\Entity\Alias $alias
+     * @return array
+     */
+    public function createAlias(\Zimbra\ZCS\Entity\Alias $alias)
+    {
+        $alias->setValidator($this->app['validator']);
+        $alias->validate('create');
+
+        // Create a new one in the webservice
+        return $this->_getZimbraAliasAdmin()->createAlias($alias);
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */
