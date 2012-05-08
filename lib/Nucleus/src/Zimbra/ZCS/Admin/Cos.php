@@ -1,6 +1,6 @@
 <?php
 /**
- * Zimbra SOAP API calls.
+ * Admin class to query the ZCS api for COS related requests.
  *
  * @author Chris Ramakers <chris.ramakers@gmail.com>
  */
