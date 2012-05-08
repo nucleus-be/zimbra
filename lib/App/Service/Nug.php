@@ -248,7 +248,7 @@ class Nug
      */
     public function getAccountAliasList($account_id)
     {
-        $aliasses = $this->_getZimbraAccountAdmin()->getAccountAliasList($account_id);
+        $aliasses = $this->_getZimbraAliasAdmin()->getAliasListByAccount($account_id);
 
         $aliasList = array();
         foreach($aliasses as $alias){
