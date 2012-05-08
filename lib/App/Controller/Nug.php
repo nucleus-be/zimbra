@@ -49,6 +49,7 @@ class Nug
         // Alias actions
         $this->controllers->post  ('/alias/',            array($this, '_aliasCreate'));
         $this->controllers->get   ('/alias/{alias_id}/', array($this, '_aliasGetDetail'));
+        $this->controllers->delete('/alias/{alias_id}/', array($this, '_aliasDelete'));
 
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
@@ -302,5 +303,21 @@ class Nug
             array('success' => $result), // Response body, encoded as JSON
             201 // Status code
         );
+    }
+
+    /**
+     * Returns the response to DELETE /alias/{alias_id}
+     * which removes an existing account alias
+     * @param $alias_id
+     * @return \App\Rest\Response
+     */
+    public function _aliasDelete($alias_id)
+    {
+        $result = $this->nugService->deleteAlias($alias_id);
+
+        return new Rest\Response(array(
+            'success' => $result,
+            'message' => 'The alias has been successfully deleted'
+        ));
     }
 }
