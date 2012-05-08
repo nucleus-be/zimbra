@@ -236,6 +236,24 @@ class Nug
     }
 
     /**
+     * Gets a list of aliasses linked to a given account identified by $account_id
+     * @param string $account_id
+     * @return array
+     */
+    public function getAccountAliasList($account_id)
+    {
+        $aliasses = $this->_getZimbraAccountAdmin()->getAccountAliasList($account_id);
+
+        $aliasList = array();
+        foreach($aliasses as $alias){
+            $preparedAlias = $this->_prepareAlias($alias);
+            $aliasList[] = $preparedAlias;
+        }
+
+        return $aliasList;
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */
@@ -315,12 +333,26 @@ class Nug
     {
         $result = $account->toArray();
         $result['uri'] = '/nug/account/'.$account->getId().'/';
-/*
+
         $result['subresources'] = array(
             'alias_list' => '/nug/account/'.$account->getId().'/alias/',
-            'forward_list' => '/nug/account/'.$account->getId().'/forward/'
+//            'forward_list' => '/nug/account/'.$account->getId().'/forward/'
         );
-*/
+
+        return $result;
+    }
+
+    /**
+     * Transforms the response object from the Zimbra soap service into a
+     * usable array with only the parameters we need
+     * @param \Zimbra\ZCS\Entity\Alias $alias
+     * @return array
+     */
+    private function _prepareAlias(\Zimbra\ZCS\Entity\Alias $alias)
+    {
+        $result = $alias->toArray();
+        $result['uri'] = '/nug/alias/'.$alias->getId().'/';
+
         return $result;
     }
 

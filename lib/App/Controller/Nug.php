@@ -43,6 +43,9 @@ class Nug
         $this->controllers->put   ('/account/{account_id}/',       array($this, '_accountUpdate'));
         $this->controllers->get   ('/account/{account_id}/quota/', array($this, '_accountGetQuota'));
 
+            // Account alias actions
+            $this->controllers->get   ('/account/{account_id}/alias/', array($this, '_accountAliasGetCollection'));
+
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
         $this->controllers->get('/cos/{cos_id}/',        array($this, '_cosGetDetail'));
@@ -173,8 +176,8 @@ class Nug
      */
     public function _accountGetCollection()
     {
-        $domains = $this->nugService->getAccountList();
-        return new Rest\Response($domains);
+        $accounts = $this->nugService->getAccountList();
+        return new Rest\Response($accounts);
     }
 
     /**
@@ -244,9 +247,27 @@ class Nug
         ));
     }
 
+    /**
+     * Responds to a GET /account/{account_id}/quota request
+     * which returns the usage quota and limit of an account
+     * @param $account_id
+     * @return \App\Rest\Response
+     */
     public function _accountGetQuota($account_id)
     {
         $result = $this->nugService->getAccountQuota($account_id);
         return new Rest\Response($result);
+    }
+
+    /**
+     * Responds to a GET /account/{account_id}/alias/ request
+     * which returns a list of aliasses for a n account
+     * @param $account_id
+     * @return \App\Rest\Response
+     */
+    public function _accountAliasGetCollection($account_id)
+    {
+        $aliasses = $this->nugService->getAccountAliasList($account_id);
+        return new Rest\Response($aliasses);
     }
 }
