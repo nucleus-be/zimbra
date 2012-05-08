@@ -98,3 +98,18 @@ div.body h6 {
     background-color: #FBFFF7;
     color: #74b038;
 }
+
+div.note {
+    font-size: 11px;
+    background-color: #fff0c6;
+    border-color: #ffc000;
+    opacity: 0.5;
+}
+div.note:hover {
+    opacity: 1;
+}
+div.note .admonition-title {
+    color: #ce7f00;
+    display: block;
+    text-transform: uppercase
+}

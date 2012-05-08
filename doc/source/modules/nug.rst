@@ -165,7 +165,7 @@ Usage
       defaultCosId  string(id)   can be the ID of a COS or ``null``, if ommitted from the request data it will be set to ``null``
       ============= ============ ====
 
-      .. note:: A domain's ``name`` is immutable and cannot be changed! If you add it to the request JSON data it'll be ignored.
+      .. note:: A domain's ``name`` is immutable and cannot be changed! If you add it to the request payload it'll be ignored.
 
    :Response:
       .. code-block:: json
@@ -313,7 +313,7 @@ Usage
 
    Create a new account on the server
 
-   .. note:: The name passed in the JSON data should contain a domain name that exists on the server!
+   .. note:: The name passed in the payload should contain a domain name that exists on the server!
 
    :Request:
       .. code-block:: http
@@ -488,6 +488,162 @@ Usage
          {
              "limit":52428800,
              "used":3743810
+         }
+
+.. http:method:: GET /nug/account/{id}/alias/
+
+   Retrieve the list of aliasses of a single account identified by the  ``{id}`` path argument.
+
+   :arg string {id}: The account id on the NUG server
+
+   :Request:
+      .. code-block:: http
+
+         GET /nug/account/092dfe48-9503-4bbc-b891-1e4206b9b1cd/alias/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+   :Response:
+      .. code-block:: json
+
+         [
+             {
+                 "id":"3f35eec5-f23a-4cff-97b3-b8f09d9734ea",
+                 "name":"chris.ramakers@nucleus.be",
+                 "uid":"chris.ramakers",
+                 "targetname":"chris@nucleus.be",
+                 "targetid":"7ab4e5f5-f6a4-47bb-be18-e12b4b092a67",
+                 "uri":"\/nug\/alias\/3f35eec5-f23a-4cff-97b3-b8f09d9734ea\/",
+                 "subresources":
+                 {
+                     "target":"\/nug\/account\/7ab4e5f5-f6a4-47bb-be18-e12b4b092a67\/"
+                 }
+             },
+             {
+                 "id":"50542f55-b760-4c60-ae46-9d9b0aa041d4",
+                 "name":"chrisramakers@nucleus.be",
+                 "uid":"chrisramakers",
+                 "targetname":"chris@nucleus.be",
+                 "targetid":"7ab4e5f5-f6a4-47bb-be18-e12b4b092a67",
+                 "uri":"\/nug\/alias\/50542f55-b760-4c60-ae46-9d9b0aa041d4\/",
+                 "subresources":
+                 {
+                     "target":"\/nug\/account\/7ab4e5f5-f6a4-47bb-be18-e12b4b092a67\/"
+                 }
+             }
+         ]
+
+Alias Resource
+--------------
+
+The alias resource is used to manipulate and retrieve information on the account aliasses in the Zimbra webservice.
+
+:Resource URI: /nug/alias/
+:Properties:
+   :id: the internal ID of this alias on the NUG server
+   :name: the full e-mail address of this alias
+   :uid: the unique identifier for this alias (the part prefixing the @ in the name property)
+   :targetid: the id of the target account
+   :targetname: the e-mail address of the target account
+
+Usage
+*****
+
+.. http:method:: GET /nug/alias/{id}/
+
+   Retrieve the details about a specific alias identified by the  ``{id}`` path argument.
+
+   :arg string {id}: The alias id on the NUG server
+
+   :Request:
+      .. code-block:: http
+
+         GET /nug/alias/38832707-17ad-4466-b4de-3d077cf2b286/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "id": "38832707-17ad-4466-b4de-3d077cf2b286",
+             "name": "christ@mail.webruimte.eu",
+             "uid": "christ",
+             "targetname": "chris@mail.webruimte.eu",
+             "targetid": "7ab4e5f5-f6a4-47bb-be18-e12b4b092a67",
+             "uri": "\/nug\/alias\/38832707-17ad-4466-b4de-3d077cf2b286\/",
+             "subresources": {
+                 "target": "\/nug\/account\/7ab4e5f5-f6a4-47bb-be18-e12b4b092a67\/"
+             }
+         }
+
+
+.. http:method:: POST /nug/alias/
+
+   Create a new alias on the server
+
+   .. note:: The name passed in the payload data should contain a domain name that exists on the server! More importantly the domain used in the name should be the same as
+             the domain that the target account belongs to!
+
+   :response Created 201: The alias was successfully created
+
+   :Request:
+      .. code-block:: http
+
+         POST /nug/account/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Content-type: application/json; charset=UTF-8
+         Content-length: 123456
+         Connection: close
+
+      .. code-block:: json
+
+         {
+             "name"     : "chrisramakers@nucleus.be",
+             "targetid" : "7ab4e5f5-f6a4-47bb-be18-e12b4b092a67",
+         }
+
+      ============= ============ ====
+      *Properties*
+      ------------- ------------ ----
+      Name          Type         Info
+      ============= ============ ====
+      name          string       **required** The full emailaddress for the new alias (the domain must exist on the NUG server and be the same as the domain of the target account!)
+      targetid      string       **required** The id of the target account this alias will point to
+      ============= ============ ====
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "success": true
+         }
+
+      .. note:: The system does not return information on the created alias, yet when success:true or the HTTP Statuscode 201 is returned as response you can assume the
+                alias has been successfully created, this is a limitation of the Zimbra server, not our data api!
+
+
+.. http:method:: DELETE /nug/alias/{id}/
+
+   DELETE an existing account alias on the NUG server identified by the ``{id}`` path argument.
+
+   :arg string {id}: The alias id on the NUG server
+
+   :response OK 200: The alias was successfully deleted
+
+   :Request:
+      .. code-block:: http
+
+         DELETE /nug/alias/18889d02-2fde-4796-9979-7688ee5062d2/ HTTP/1.1
+         Host: http://data.nucleus.be
+         Connection: close
+
+   :Response:
+      .. code-block:: json
+
+         {
+             "success": true,
+             "message": "The alias has been successfully deleted"
          }
 
 COS Resource
