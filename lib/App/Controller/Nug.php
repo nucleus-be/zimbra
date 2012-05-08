@@ -47,6 +47,7 @@ class Nug
             $this->controllers->get   ('/account/{account_id}/alias/', array($this, '_accountAliasGetCollection'));
 
         // Alias actions
+        $this->controllers->post  ('/alias/',            array($this, '_aliasCreate'));
         $this->controllers->get   ('/alias/{alias_id}/', array($this, '_aliasGetDetail'));
 
         // Class of service actions
@@ -284,5 +285,22 @@ class Nug
     {
         $alias = $this->nugService->getAlias($alias_id);
         return new Rest\Response($alias);
+    }
+
+    /**
+     * Returns the response to POST /alias/
+     * which creates a new alias
+     * @return \App\Rest\Response
+     */
+    public function _aliasCreate()
+    {
+        $aliasData = $this->app['request']->payload;
+        $aliasEntity = \Zimbra\ZCS\Entity\Alias::createFromJson($aliasData);
+        $result = $this->nugService->createAlias($aliasEntity);
+
+        return new Rest\Response(
+            array('success' => $result), // Response body, encoded as JSON
+            201 // Status code
+        );
     }
 }
