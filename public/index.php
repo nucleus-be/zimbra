@@ -73,6 +73,11 @@ $app['zimbra_admin_account'] = function() use ($app){
     $zimbraAccountAdmin->auth('admin', 'kl!tr34h');
     return $zimbraAccountAdmin;
 };
+$app['zimbra_admin_alias'] = function() use ($app){
+    $zimbraAliasAdmin = new \Zimbra\ZCS\Admin\Alias('mail.webruimte.eu', 7071);
+    $zimbraAliasAdmin->auth('admin', 'kl!tr34h');
+    return $zimbraAliasAdmin;
+};
 
 // Mount controllers
 $app->mount('/nug', new App\Controller\Nug());

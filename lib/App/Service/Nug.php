@@ -30,6 +30,12 @@ class Nug
     protected $zimbraAccountAdmin;
 
     /**
+     * The Zimbra community server admin class for Aliasses
+     * @var \Zimbra\ZCS\Admin\Alias
+     */
+    protected $zimbraAliasAdmin;
+
+    /**
      * Initializes properties
      * @param $app Appliction
      */
@@ -254,6 +260,17 @@ class Nug
     }
 
     /**
+     * Gets a single Nug alias
+     * @param string $alias_id
+     * @return array
+     */
+    public function getAlias($alias_id)
+    {
+        $alias = $this->_getZimbraAliasAdmin()->getAlias($alias_id);
+        return  $this->_prepareAlias($alias);
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */
@@ -287,6 +304,18 @@ class Nug
             $this->zimbraAccountAdmin = $this->app['zimbra_admin_account'];
         }
         return $this->zimbraAccountAdmin;
+    }
+
+    /**
+     * Gets the Zimbra Alias admin from the DI container
+     * @return \Zimbra\ZCS\Admin\Account
+     */
+    protected function _getZimbraAliasAdmin()
+    {
+        if (!$this->zimbraAliasAdmin){
+            $this->zimbraAliasAdmin = $this->app['zimbra_admin_alias'];
+        }
+        return $this->zimbraAliasAdmin;
     }
 
     /**
@@ -352,6 +381,7 @@ class Nug
     {
         $result = $alias->toArray();
         $result['uri'] = '/nug/alias/'.$alias->getId().'/';
+        $result['subresources']['target'] = '/nug/account/'.$alias->getTargetid().'/';
 
         return $result;
     }

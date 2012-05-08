@@ -46,6 +46,9 @@ class Nug
             // Account alias actions
             $this->controllers->get   ('/account/{account_id}/alias/', array($this, '_accountAliasGetCollection'));
 
+        // Alias actions
+        $this->controllers->get   ('/alias/{alias_id}/', array($this, '_aliasGetDetail'));
+
         // Class of service actions
         $this->controllers->get('/cos/',                 array($this, '_cosGetCollection'));
         $this->controllers->get('/cos/{cos_id}/',        array($this, '_cosGetDetail'));
@@ -269,5 +272,17 @@ class Nug
     {
         $aliasses = $this->nugService->getAccountAliasList($account_id);
         return new Rest\Response($aliasses);
+    }
+
+    /**
+     * Returns the response to GET /alias/{alias_id}/
+     * which returns the details of an alias identified by $alias_id
+     * @param string $alias_id
+     * @return \App\Rest\Response
+     */
+    public function _aliasGetDetail($alias_id)
+    {
+        $alias = $this->nugService->getAlias($alias_id);
+        return new Rest\Response($alias);
     }
 }
