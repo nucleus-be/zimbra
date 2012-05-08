@@ -285,6 +285,17 @@ class Nug
     }
 
     /**
+     * Deletes an account alias from the Nug webservice
+     * @param string $alias_id
+     * @return bool
+     */
+    public function deleteAlias($alias_id)
+    {
+        $result = $this->_getZimbraAliasAdmin()->deleteAlias($alias_id);
+        return $result;
+    }
+
+    /**
      * Gets the Zimbra Domain admin from the DI container
      * @return \Zimbra\ZCS\Admin\Domain
      */

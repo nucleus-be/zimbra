@@ -79,5 +79,23 @@ class Alias
         return true;
     }
 
+    /**
+     * Removes an account alias from the ZCS webservice
+     * @param string $alias_id
+     * @return bool
+     */
+    public function deleteAlias($alias_id)
+    {
+        $alias = $this->getAlias($alias_id);
+        $attributes = array();
+
+        $response = $this->soapClient->request('RemoveAccountAliasRequest', $attributes, array(
+            'id'    => $alias->getTargetid(),
+            'alias' => $alias->getName()
+        ));
+
+        return true;
+    }
+
 
 }
