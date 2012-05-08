@@ -1,6 +1,6 @@
 <?php
 /**
- * Zimbra SOAP API calls.
+ * Admin class to query the ZCS api for Account related requests.
  *
  * @author Chris Ramakers <chris.ramakers@gmail.com>
  */
@@ -39,7 +39,7 @@ class Account
 
     /**
      * Fetches all accounts from the soap webservice and returns them as an array
-     * containing \Zimbra\ZCS\Entity\Cos objects
+     * containing \Zimbra\ZCS\Entity\Account objects
      * @param string $domain_name The name of the domain you are looking things up for
      * @return array
      */
@@ -66,8 +66,34 @@ class Account
     }
 
     /**
+     * Fetches all aliasses for an account from the soap webservice and returns them as an array
+     * containing \Zimbra\ZCS\Entity\Alias objects
+     * @param string $account_id The id of the account you are looking things up for
+     * @return array
+     */
+    public function getAccountAliasList($account_id)
+    {
+        $attributes = array(
+            'types' => 'aliases'
+        );
+        $params = array(
+            'query' => sprintf('(zimbraAliasTargetId=%s)', $account_id)
+        );
+
+        $response = $this->soapClient->request('SearchDirectoryRequest', $attributes, $params);
+        $aliasList = $response->children()->SearchDirectoryResponse->children();
+
+        $results = array();
+        foreach ($aliasList as $alias) {
+            $results[] = \Zimbra\ZCS\Entity\Alias::createFromXml($alias);
+        }
+
+        return $results;
+    }
+
+    /**
      * Fetches all accounts from the soap webservice and returns them as an array
-     * containing \Zimbra\ZCS\Entity\Cos objects
+     * containing \Zimbra\ZCS\Entity\Account objects
      * @return array
      */
     public function getAccountList()
@@ -153,6 +179,12 @@ class Account
         return \Zimbra\ZCS\Entity\Account::createFromXml($updatedAccount[0]);
     }
 
+    /**
+     * Returns the usage limit and current usage for an account identified
+     * by the $account_id parameter
+     * @param $account_id
+     * @return array
+     */
     public function getAccountQuotaUsage($account_id)
     {
         $response = $this->soapClient->request('GetQuotaUsageRequest');
