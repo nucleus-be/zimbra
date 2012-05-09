@@ -1,0 +1,19 @@
+{
+    "name": "nucleusbe/zimbra",
+    "description": "A collection of PHP classes to communicate with Zimbra ZCS servers",
+    "keywords": ["zimbra", "zcs"],
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Chris Ramakers",
+            "email": "chris@nucleus.be"
+        }
+    ],
+    "require": {
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-0": { "Nucleus\\Zimbra": "src" }
+    }
+}
