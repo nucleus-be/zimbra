@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "symfony/validator" : "2.0.x"
+        "symfony/validator" : "2.0.x",
+        "mockery/mockery"   : ">=0.7.2"
     },
     "autoload": {
         "psr-0": {
