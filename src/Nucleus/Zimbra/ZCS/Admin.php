@@ -19,12 +19,11 @@ abstract class Admin
 
     /**
      * Constructor
-     * @param string $server The hostname or IP of the zimbra server
-     * @param int $port The port to connect to the server (defaults to 7071)
+     * @param \Zimbra\ZCS\SoapClient $client
      */
-    public function __construct($server, $port = 7071)
+    public function __construct(\Zimbra\ZCS\SoapClient $client)
     {
-        $this->soapClient = new \Zimbra\ZCS\SoapClient($server, $port);
+        $this->setSoapClient($client);
     }
 
     /**
@@ -41,6 +40,25 @@ abstract class Admin
         $this->soapClient->addContextChild('authToken', $authToken);
 
         return (string) $authToken;
+    }
+
+    /**
+     * The setter for the Soap Client class
+     * @param \Zimbra\ZCS\SoapClient $soapClient
+     * @return \Zimbra\ZCS\Admin
+     */
+    public function setSoapClient($soapClient)
+    {
+        $this->soapClient = $soapClient;
+        return $this;
+    }
+
+    /**
+     * @return \Zimbra\ZCS\SoapClient
+     */
+    public function getSoapClient()
+    {
+        return $this->soapClient;
     }
 
 }
