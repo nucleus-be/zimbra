@@ -5,7 +5,9 @@
  * When an error response from the webservice is returned on the other hand
  * a \Zimbra\ZCS\Exception\Webservice exception will be thrown!
  *
- * @author Chris Ramakers <chris.ramakers@gmail.com>
+ *
+ * @author Chris Ramakers <chris@nucleus.be>
+ * @license http://www.gnu.org/licenses/gpl.txt
  */
 namespace Zimbra\ZCS\Exception;
 

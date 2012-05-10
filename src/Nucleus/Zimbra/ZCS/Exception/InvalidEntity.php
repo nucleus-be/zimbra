@@ -1,7 +1,11 @@
 <?php
 
 /**
- * @author Chris Ramakers <chris.ramakers@gmail.com>
+ * Exception that is raised when an entity is about to be created or
+ * sent to the API that contains invalid data
+ *
+ * @author Chris Ramakers <chris@nucleus.be>
+ * @license http://www.gnu.org/licenses/gpl.txt
  */
 namespace Zimbra\ZCS\Exception;
 
