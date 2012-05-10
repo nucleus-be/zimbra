@@ -27,22 +27,6 @@ abstract class Admin
     }
 
     /**
-     * Authenticate
-     * @param string $username
-     * @param string $password
-     * @return string The authtoken received when logging in
-     */
-    public function auth($username, $password)
-    {
-        $xml = $this->soapClient->request('AuthRequest', array('name' => $username, 'password' => $password));
-
-        $authToken = $xml->children()->AuthResponse->authToken;
-        $this->soapClient->addContextChild('authToken', $authToken);
-
-        return (string) $authToken;
-    }
-
-    /**
      * The setter for the Soap Client class
      * @param \Zimbra\ZCS\SoapClient $soapClient
      * @return \Zimbra\ZCS\Admin

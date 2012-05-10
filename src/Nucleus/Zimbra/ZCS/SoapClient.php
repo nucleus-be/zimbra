@@ -26,35 +26,79 @@ class SoapClient
     private $context;
 
     /**
-     * curl resource handle
-     * @var resource
+     * The curl client
+     * @var \Zimbra\ZCS\CurlClient
      */
-    private $curlHandle;
+    private $curlClient;
 
     /**
      * When true all XML will be outputted
      * @var bool
      */
-    static $debug = false;
+    static public $debug = false;
 
     /**
      * Constructor which initializes the connection to the receiving server
      * @param string $server
      * @param integer $port
+     * @param string $username
+     * @param string $password
      */
-    public function __construct($server, $port)
+    public function __construct($server = null, $port = null, $username = null, $password = null)
     {
-        $this->curlHandle = curl_init();
-        curl_setopt($this->curlHandle, CURLOPT_URL, "https://$server:$port/service/admin/soap");
-        curl_setopt($this->curlHandle, CURLOPT_POST, TRUE);
-        curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($this->curlHandle, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($this->curlHandle, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($this->curlHandle, CURLOPT_CONNECTTIMEOUT, 30);
+        if($server && $port) {
+            $curlClient = new \Zimbra\ZCS\CurlClient("https://$server:$port/service/admin/soap");
+            $this->setCurlClient($curlClient);
+        }
 
         $this->message = new \SimpleXMLElement('<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"></soap:Envelope>');
         $this->context = $this->message->addChild('Header')->addChild('context', null, 'urn:zimbra');
         $this->message->addChild('Body');
+
+        if($username && $password && $this->getCurlClient()){
+            $this->auth($username, $password);
+        }
+    }
+
+    /**
+     * Setter for the curl client
+     * @param \Zimbra\ZCS\CurlClient $curlClient
+     * @return SoapClient
+     */
+    public function setCurlClient(\Zimbra\ZCS\CurlClient $curlClient)
+    {
+        $curlClient
+                ->setOption(CURLOPT_POST, TRUE)
+                ->setOption(CURLOPT_RETURNTRANSFER, TRUE)
+                ->setOption(CURLOPT_SSL_VERIFYPEER, FALSE)
+                ->setOption(CURLOPT_SSL_VERIFYHOST, FALSE)
+                ->setOption(CURLOPT_CONNECTTIMEOUT, 30);
+
+        $this->curlClient = $curlClient;
+        return $this;
+    }
+
+    /**
+     * Getter for the curl client
+     * @return CurlClient
+     */
+    public function getCurlClient()
+    {
+        return $this->curlClient;
+    }
+
+    /**
+     * Authenticate
+     * @param string $username
+     * @param string $password
+     * @return string The authtoken received when logging in
+     */
+    public function auth($username, $password)
+    {
+        $xml = $this->request('AuthRequest', array('name' => $username, 'password' => $password));
+        $authToken = $xml->children()->AuthResponse->authToken;
+        $this->addContextChild('authToken', $authToken);
+        return (string) $authToken;
     }
 
     /**
@@ -81,14 +125,29 @@ class SoapClient
     }
 
     /**
+     * Getter for the context element
+     * @return \SimpleXMLElement
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
      * Sends an XML request to the SOAP server
      * @param string $action The action you are performing, a soap method defined in the wsdl
      * @param array $attributes The attributes for the XML node that defines the action
      * @param array $params Request params
+     * @throws Exception\Soap
      * @return \SimpleXMLElement The response's Body tag
      */
     public function request($action, $attributes = array(), $params = array())
     {
+        // Sanity check to see if we have connected
+        if (!$this->getCurlClient()){
+            throw new \Zimbra\ZCS\Exception\Soap('No valid connection has been established, have you connected and authenticated with the ZCS Soap webservice?');
+        }
+
         unset($this->message->children('soap', true)->Body);
         $body = $this->message->addChild('Body');
         $actionChild = $body->addChild($action, null, 'urn:zimbraAdmin');
@@ -123,21 +182,23 @@ class SoapClient
             echo self::formatXml($this->getXml());
         }
 
-        curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, $this->getXml());
-        return $this->handleResponse(curl_exec($this->curlHandle));
+        $this->getCurlClient()->setOption(CURLOPT_POSTFIELDS, $this->getXml());
+        return $this->handleResponse($this->getCurlClient()->execute());
     }
 
     /**
      * Handles the response
      * @param string $soapMessage The response
+     * @throws Exception\Webservice
+     * @throws Exception\Soap
      * @return \SimpleXMLElement The response XML <Body> tag
      */
     private function handleResponse($soapMessage)
     {
         // No message is returned, something went wrong, throw a Soap exception which
-        // means there was an error communicating with the soap webservice
+        // means there was an error communicating with the soap webservice`
         if (!$soapMessage) {
-            throw new \Zimbra\ZCS\Exception\Soap(curl_error($this->curlHandle), curl_errno($this->curlHandle));
+            throw new \Zimbra\ZCS\Exception\Soap($this->getCurlClient()->getError(), $this->getCurlClient()->getErrorNr());
         }
 
         // Construct a SimpleXMLElement from the message

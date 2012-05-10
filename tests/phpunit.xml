@@ -4,4 +4,7 @@
       <directory>./</directory>
     </testsuite>
   </testsuites>
+  <listeners>
+    <listener class="\Mockery\Adapter\Phpunit\TestListener" file="Mockery/Adapter/Phpunit/TestListener.php"></listener>
+  </listeners>
 </phpunit>
