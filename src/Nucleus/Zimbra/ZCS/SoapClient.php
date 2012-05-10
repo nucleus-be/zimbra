@@ -44,10 +44,6 @@ class SoapClient
      */
     public function __construct($server, $port)
     {
-        if(isset($_GET['debug'])){
-            self::$debug = true;
-        }
-
         $this->curlHandle = curl_init();
         curl_setopt($this->curlHandle, CURLOPT_URL, "https://$server:$port/service/admin/soap");
         curl_setopt($this->curlHandle, CURLOPT_POST, TRUE);
