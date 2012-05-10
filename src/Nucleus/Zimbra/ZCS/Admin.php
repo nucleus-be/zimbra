@@ -2,7 +2,9 @@
 /**
  * Zimbra SOAP API calls.
  *
- * @author Chris Ramakers <chris.ramakers@gmail.com>
+ * @author LiberSoft <info@libersoft.it>
+ * @author Chris Ramakers <chris@nucleus.be>
+ * @license http://www.gnu.org/licenses/gpl.txt
  */
 namespace Zimbra\ZCS;
 

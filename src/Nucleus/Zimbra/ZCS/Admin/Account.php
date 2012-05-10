@@ -2,7 +2,8 @@
 /**
  * Admin class to query the ZCS api for Account related requests.
  *
- * @author Chris Ramakers <chris.ramakers@gmail.com>
+ * @author Chris Ramakers <chris@nucleus.be>
+ * @license http://www.gnu.org/licenses/gpl.txt
  */
 namespace Zimbra\ZCS\Admin;
 
