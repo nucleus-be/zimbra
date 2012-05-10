@@ -2,18 +2,22 @@
     "name": "nucleusbe/zimbra",
     "description": "A collection of PHP classes to communicate with Zimbra ZCS servers",
     "keywords": ["zimbra", "zcs"],
-    "license": "GPL",
+    "license": "GPLv3",
     "authors": [
         {
-            "name": "Chris Ramakers",
-            "email": "chris@nucleus.be"
+            "name"  : "Chris Ramakers",
+            "email" : "chris@nucleus.be"
+        },{
+            "name"  : "Libersoft",
+            "email" : "info@libersoft.it"
         }
     ],
     "require": {
-    },
-    "suggest": {
+        "symfony/validator" : "2.0.x"
     },
     "autoload": {
-        "psr-0": { "Nucleus\\Zimbra": "src" }
+        "psr-0": {
+            "Nucleus\\Zimbra": "src/Nucleus"
+        }
     }
 }
