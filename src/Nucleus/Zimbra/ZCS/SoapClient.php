@@ -158,6 +158,13 @@ class SoapClient
         return $xml->children('soap', true)->Body;
     }
 
+    /**
+     * Outputs a human readable version of the XML passed
+     * @static
+     * @param string $xml
+     * @param bool $escape True to HTML escape the output
+     * @return string
+     */
     public static function formatXml($xml, $escape = false)
     {
         $dom = new \DOMDocument('1.0');
