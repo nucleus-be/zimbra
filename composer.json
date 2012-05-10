@@ -1,6 +1,8 @@
 {
     "name": "nucleusbe/zimbra",
+    "type": "library",
     "description": "A collection of PHP classes to communicate with Zimbra ZCS servers",
+    "homepage": "https://github.com/nucleus-be/Zimbra",
     "keywords": ["zimbra", "zcs"],
     "license": "GPLv3",
     "authors": [
@@ -17,7 +19,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Nucleus\\Zimbra": "src/Nucleus"
+            "Zimbra": "src/Nucleus"
         }
     }
 }
