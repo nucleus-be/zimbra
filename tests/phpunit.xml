@@ -1,0 +1,7 @@
+<phpunit bootstrap="./Bootstrap.php">
+  <testsuites>
+    <testsuite name="Nucleus Zimbra tests">
+      <directory>./</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
