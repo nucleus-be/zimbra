@@ -162,7 +162,7 @@ abstract class Entity
      */
     public function __toString()
     {
-        return (string)$this->_data['name'];
+        return in_array('name', $this->getDataMap()) ? $this->getName() : $this->getId();
     }
 
     /**
