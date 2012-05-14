@@ -15,7 +15,7 @@ class CosEntityTest extends PHPUnit_Framework_TestCase
             $name = "";
             $jsonData = $this->_getCosJson($name);
 
-            /** @var $cos \Zimbra\ZCS\Entity\Domain */
+            /** @var $cos \Zimbra\ZCS\Entity\Alias */
             $cos = \Zimbra\ZCS\Entity\Cos::createFromJson($jsonData);
             $cos->setValidator($this->_getValidator());
             $cos->validate();
@@ -49,7 +49,7 @@ class CosEntityTest extends PHPUnit_Framework_TestCase
         $xmlData   = new \SimpleXMLElement($xmlString);
         $cosXml    = $xmlData->children('soap', true)->Body->children()->GetCosResponse->children();
 
-        /** @var $cos \Zimbra\ZCS\Entity\Domain */
+        /** @var $cos \Zimbra\ZCS\Entity\Alias */
         $cos = \Zimbra\ZCS\Entity\Cos::createFromXml($cosXml[0]);
 
         $this->assertEquals($cos->getName(), "bronze");
