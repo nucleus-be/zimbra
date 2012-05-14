@@ -9,6 +9,10 @@
 
 namespace Zimbra\ZCS\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContext;
+
 class Alias extends \Zimbra\ZCS\Entity
 {
     /**
@@ -49,6 +53,23 @@ class Alias extends \Zimbra\ZCS\Entity
         '@targetName'         => 'targetname',
         'zimbraAliasTargetId' => 'targetid'
     );
+
+    /**
+     * Validation for the properties of this Entity
+     *
+     * @static
+     * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
+     */
+    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        // Name should never be NULL or a blank string
+        $metadata->addPropertyConstraint('name', new Assert\NotNull());
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank());
+
+        // Targetid may not be NULL or a blank string
+        $metadata->addPropertyConstraint('targetid', new Assert\NotNull());
+        $metadata->addPropertyConstraint('targetid', new Assert\NotBlank());
+    }
 
     /**
      * @param String $name
