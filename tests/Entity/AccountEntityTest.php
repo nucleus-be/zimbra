@@ -14,37 +14,114 @@ class AccountEntityTest extends PHPUnit_Framework_TestCase
         // TODO: test other validation rules!
     }
 
-    public function testValidateAccountsNameNotEmpty()
+    public function testValidateCreateAccountNameNotEmpty()
     {
+        $this->setExpectedException("\Zimbra\ZCS\Exception\InvalidEntity");
+
         try {
-            $name = "";
-            $jsonData = $this->_getAccountJson($name);
+            $jsonData = $this->_getAccountJson();
+
+            /** @var $account \Zimbra\ZCS\Entity\Account */
+            $account = \Zimbra\ZCS\Entity\Account::createFromJson($jsonData);
+            $account->setName('');
+            $account->setValidator($this->_getValidator());
+            $account->validate('create');
+            $this->fail('Validation passed, it should fail instead!');
+        } catch (\Zimbra\ZCS\Exception\InvalidEntity $e) {
+            $errors = $e->getErrors();
+            $this->assertEquals($errors[0]['property'], 'name');
+            $this->assertEquals($errors[0]['errormessage'], "This value should not be blank. (received value: '')");
+            throw $e;
+        }
+
+    }
+
+    public function testValidateCreateAccountPasswordNotEmpty()
+    {
+        $this->setExpectedException("\Zimbra\ZCS\Exception\InvalidEntity");
+
+        try {
+            $jsonData = $this->_getAccountJson();
+
+            /** @var $account \Zimbra\ZCS\Entity\Account */
+            $account = \Zimbra\ZCS\Entity\Account::createFromJson($jsonData);
+            $account->setPassword('');
+            $account->setValidator($this->_getValidator());
+            $account->validate('create');
+            $this->fail('Validation passed, it should fail instead!');
+        } catch (\Zimbra\ZCS\Exception\InvalidEntity $e) {
+            $errors = $e->getErrors();
+            $this->assertEquals($errors[0]['property'], 'password');
+            $this->assertEquals($errors[0]['errormessage'], "This value should not be blank. (received value: '')");
+            throw $e;
+        }
+
+    }
+
+    public function testValidateCreateAccountNameNotLongerThan64Chars()
+    {
+        $this->markTestSkipped('Not testable due to symfony bug #4398 (https://github.com/symfony/symfony/issues/4398)');
+
+        $this->setExpectedException("\Zimbra\ZCS\Exception\InvalidEntity");
+
+        try {
+            $jsonData = $this->_getAccountJson();
+            $invalidName = str_repeat('foobar', 20);
+
+            /** @var $account \Zimbra\ZCS\Entity\Account */
+            $account = \Zimbra\ZCS\Entity\Account::createFromJson($jsonData);
+            $account->setName($invalidName);
+            $account->setValidator($this->_getValidator());
+            $account->validate('create');
+            $this->fail('Validation passed, it should fail instead!');
+        } catch (\Zimbra\ZCS\Exception\InvalidEntity $e) {
+            $errors = $e->getErrors();
+            $this->assertEquals($errors[0]['property'], 'name');
+            $this->assertEquals($errors[0]['errormessage'], "This value is too long. It should have 64 characters or less. (received value: '$invalidName')");
+            throw $e;
+        }
+
+    }
+
+    public function testValidateCreateAccountNameNotNull()
+    {
+        $this->setExpectedException("\Zimbra\ZCS\Exception\InvalidEntity");
+
+        try {
+            $jsonData = $this->_getAccountJson();
 
             /** @var $account \Zimbra\ZCS\Entity\Account */
             $account = \Zimbra\ZCS\Entity\Account::createFromJson($jsonData);
             $account->setValidator($this->_getValidator());
-            $account->validate();
-        } catch (\Exception $e) {
-            $this->assertEquals('Zimbra\ZCS\Exception\InvalidEntity', get_class($e));
-            $errors = $e->getErrors();
-            $this->assertEquals($errors[0]['property'], 'name');
-            $this->assertEquals($errors[0]['errormessage'], "This value should not be blank. (received value: '')");
-        }
-    }
-
-    public function testValidateAccountNameNotNull()
-    {
-        try {
-            $jsonData = $this->_getAccountJson();
-            $account = \Zimbra\ZCS\Entity\Account::createFromJson($jsonData);
-            $account->setValidator($this->_getValidator());
             $account->setName(null);
-            $account->validate();
-        } catch (\Exception $e) {
-            $this->assertEquals('Zimbra\ZCS\Exception\InvalidEntity', get_class($e));
+            $account->validate('create');
+            $this->fail('Validation passed, it should fail instead!');
+        } catch (\Zimbra\ZCS\Exception\InvalidEntity $e) {
             $errors = $e->getErrors();
             $this->assertEquals($errors[0]['property'], 'name');
             $this->assertEquals($errors[0]['errormessage'], "This value should not be null. (received value: NULL)");
+            throw $e;
+        }
+    }
+
+    public function testValidateCreateAccountPasswordNotNull()
+    {
+        $this->setExpectedException("\Zimbra\ZCS\Exception\InvalidEntity");
+
+        try {
+            $jsonData = $this->_getAccountJson();
+
+            /** @var $account \Zimbra\ZCS\Entity\Account */
+            $account = \Zimbra\ZCS\Entity\Account::createFromJson($jsonData);
+            $account->setValidator($this->_getValidator());
+            $account->setPassword(null);
+            $account->validate('create');
+            $this->fail('Validation passed, it should fail instead!');
+        } catch (\Zimbra\ZCS\Exception\InvalidEntity $e) {
+            $errors = $e->getErrors();
+            $this->assertEquals($errors[0]['property'], 'password');
+            $this->assertEquals($errors[0]['errormessage'], "This value should not be null. (received value: NULL)");
+            throw $e;
         }
     }
 

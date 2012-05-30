@@ -14,25 +14,18 @@ class Account
      * Fetches a single account from the webservice and returns it
      * as a \Zimbra\ZCS\Entity\Account object
      * @param string $account
-     * @param string $by
-     * @param array $attrs
      * @return \Zimbra\ZCS\Entity\Account
      */
-    public function getAccount($account, $by = 'id', $attrs = array())
+    public function getAccount($account)
     {
-        $attributes = array();
-        if (!empty($attrs)) {
-            $attributes['attrs'] = implode(',', $attrs);
-        }
-
         $params = array(
             'account' => array(
                 '_'  => $account,
-                'by' => $by,
+                'by' => 'id',
             )
         );
 
-        $response = $this->soapClient->request('GetAccountRequest', $attributes, $params);
+        $response = $this->soapClient->request('GetAccountRequest', array(), $params);
         $accounts = $response->children()->GetAccountResponse->children();
 
         return \Zimbra\ZCS\Entity\Account::createFromXml($accounts[0]);

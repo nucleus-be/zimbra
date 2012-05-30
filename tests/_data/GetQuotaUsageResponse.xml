@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <context xmlns="urn:zimbra">
+      <change token="14742"/>
+    </context>
+  </soap:Header>
+  <soap:Body>
+    <GetQuotaUsageResponse xmlns="urn:zimbraAdmin" more="0" searchTotal="14">
+      <account limit="52428800" id="cbc6c3f4-8a6c-4403-b8c6-9aa8400bc44c" name="info@chris.be" used="3746822"/>
+      <account limit="524288000" id="d8114538-f9cf-4448-9b40-349f7a652391" name="info@nucleus.be" used="3350182"/>
+      <account limit="524288000" id="8282b006-cc43-4cde-86e8-87a4cf1c5f19" name="chris@nucleus.be" used="3349146"/>
+      <account limit="524288000" id="18fb081f-8fcd-4843-ab97-a5f4ee97fc90" name="admin@mail.webruimte.eu" used="1724720"/>
+      <account limit="52428800" id="7ab4e5f5-f6a4-47bb-be18-e12b4b092a67" name="chris@mail.webruimte.eu" used="1625473"/>
+      <account limit="524288000" id="61685a53-da9d-40df-9f61-9fc2c2b4b794" name="galsync@nucleus.be" used="0"/>
+      <account limit="0" id="61d003d7-60e5-4305-9a50-34f86b04c88d" name="ham.6j4idtwxu@mail.webruimte.eu" used="0"/>
+      <account limit="524288000" id="67ca13be-ed53-445c-aed6-68530de82336" name="loremipsumdolorsitametconsecteturadipiscingelitphasellusegestasdolorsitametquamrhoncusultricesloremipsumdolorsitloremipsumdolorsitametconsecteturadipiscingelitphasellusegestasdolorsitametquamrhoncusultricesloremipsumdolorsitloremipsumdolorsitametconsecteturadipiscingelitphasellusegestasdolorsitametquamrhoncusultricesloremipsumdolorsitloremipsumdolorsitametconsecteturadipiscingelitphasellusegestasdolorsitametquamrhoncusultricesloremipsumdolorsit@mail.webruimte.eu" used="0"/>
+      <account limit="100" id="e3380d28-ba9d-4704-bcf6-d48e163d1d1e" name="sales@nucleus.be" used="0"/>
+      <account limit="204800" id="1accc249-d696-48a5-85d2-de8bfbf2a229" name="salesint@nucleus.be" used="0"/>
+      <account limit="0" id="9c646c9c-5e8e-4541-b37b-547d01d881da" name="spam.vwqbht2hdd@mail.webruimte.eu" used="0"/>
+      <account limit="52428800" id="48e0f43e-413f-4df8-8ad7-fce05cd4f347" name="support@chris.be" used="0"/>
+      <account limit="500" id="a5c2b65a-1dda-49b2-9e24-27259fc8bb96" name="support@nucleus.be" used="0"/>
+      <account limit="0" id="86de8d00-baa2-46bd-87b4-195f2ce164ff" name="virus-quarantine.vruh9_dx@mail.webruimte.eu" used="0"/>
+    </GetQuotaUsageResponse>
+  </soap:Body>
+</soap:Envelope>
