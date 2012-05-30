@@ -68,9 +68,6 @@ abstract class Entity
         // Set the properties from the json based on the datamap
         foreach($properties as $property){
             $setter = 'set'.ucfirst($property);
-            if(!method_exists($entity, $setter)){
-                throw new \Exception(sprintf('Cannot create entity from JSON, property %s on the % entity does not exist!', $property, $class));
-            }
             $entity->$setter(isset($json->$property) ? $json->$property : null);
         }
 
@@ -112,9 +109,6 @@ abstract class Entity
         // Set the properties from the json based on the datamap
         foreach($properties as $zimbraKey => $property){
             $setter = 'set'.ucfirst($property);
-            if(!method_exists($entity, $setter)){
-                throw new \Exception(sprintf('Cannot create entity from XML, property %s on the %s entity does not exist!', $property, $class));
-            }
             $xpathQuery = sprintf("a[@n='%s']", $zimbraKey);
             $results = $xml->xpath($xpathQuery);
             $entity->$setter(count($results) > 0 ? (string)$results[0] : null);
@@ -123,10 +117,6 @@ abstract class Entity
         // Set the attributes to entity properties
         foreach($attributes as $zimbraAttribute => $attribute){
             $setter = 'set'.ucfirst($attribute);
-            if(!method_exists($entity, $setter)){
-                throw new \Exception(sprintf('Cannot create entity from XML, property %s on the %s entity does not exist!', $property, $class));
-            }
-
             $entity->$setter((string)$xml->attributes()->$zimbraAttribute ?: null);
         }
 
@@ -176,10 +166,6 @@ abstract class Entity
 
         foreach($properties as $property){
             $getter = 'get'.ucfirst($property);
-            if(!method_exists($this, $getter)){
-                $class = get_called_class();
-                throw new \Exception(sprintf('Cannot return array since getter %s on the %s entity does not exist!', $getter, $class));
-            }
             $array[$property] = $this->$getter();
         }
 
