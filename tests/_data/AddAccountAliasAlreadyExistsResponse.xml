@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <context xmlns="urn:zimbra">
+      <change token="14793"/>
+    </context>
+  </soap:Header>
+  <soap:Body>
+    <soap:Fault>
+      <soap:Code>
+        <soap:Value>soap:Sender</soap:Value>
+      </soap:Code>
+      <soap:Reason>
+        <soap:Text>email address already exists: foobarbaz@mail.webruimte.eu, at DN: uid=foobarbaz,ou=people,dc=mail,dc=webruimte,dc=eu</soap:Text>
+      </soap:Reason>
+      <soap:Detail>
+        <Error xmlns="urn:zimbra">
+          <Code>account.ACCOUNT_EXISTS</Code>
+          <Trace>btpool0-8://mail.webruimte.eu:7071/service/admin/soap:1338380607402:111301f9a3800192</Trace>
+        </Error>
+      </soap:Detail>
+    </soap:Fault>
+  </soap:Body>
+</soap:Envelope>
