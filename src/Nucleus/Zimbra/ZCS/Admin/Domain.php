@@ -30,25 +30,18 @@ class Domain
      * Fetches a single domain from the webservice and returns it
      * as a \Zimbra\ZCS\Entity\Domain object
      * @param string $domain
-     * @param string $by
-     * @param array $attrs
      * @return \Zimbra\ZCS\Entity\Domain
      */
-    public function getDomain($domain, $by = 'id', $attrs = array())
+    public function getDomain($domain)
     {
-        $attributes = array();
-        if (!empty($attrs)) {
-            $attributes['attrs'] = implode(',', $attrs);
-        }
-
         $params = array(
             'domain' => array(
                 '_'  => $domain,
-                'by' => $by,
+                'by' => 'id'
             )
         );
 
-        $response = $this->soapClient->request('GetDomainRequest', $attributes, $params);
+        $response = $this->soapClient->request('GetDomainRequest', array(), $params);
         $domains = $response->children()->GetDomainResponse->children();
 
         return \Zimbra\ZCS\Entity\Domain::createFromXml($domains[0]);
