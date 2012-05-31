@@ -1,5 +1,5 @@
 {
-    "hash": "30c7f8a06b18eea7f226a3fb80f3235f",
+    "hash": "bfef79af0b98e59d3bdb3364bddd9606",
     "packages": [
         {
             "package": "doctrine/common",
@@ -13,8 +13,15 @@
         },
         {
             "package": "symfony/validator",
-            "version": "2.0.x-dev",
-            "source-reference": "v2.0.13"
+            "version": "dev-master",
+            "source-reference": "cf46013f35ddb109c95aee97f74d5bd0f4d7e18b",
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
+        },
+        {
+            "package": "symfony/validator",
+            "version": "dev-master",
+            "source-reference": "cf46013f35ddb109c95aee97f74d5bd0f4d7e18b"
         }
     ],
     "packages-dev": null,

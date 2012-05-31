@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <context xmlns="urn:zimbra">
+      <change token="14790"/>
+    </context>
+  </soap:Header>
+  <soap:Body>
+    <SearchDirectoryResponse xmlns="urn:zimbraAdmin" more="0" searchTotal="5">
+      <alias id="bf372ec8-c399-4249-b5e3-712436023814" name="christopher2@mail.webruimte.eu" targetName="chris@mail.webruimte.eu" type="account">
+        <a n="uid">christopher2</a>
+        <a n="zimbraAliasTargetId">7ab4e5f5-f6a4-47bb-be18-e12b4b092a67</a>
+        <a n="zimbraId">bf372ec8-c399-4249-b5e3-712436023814</a>
+        <a n="zimbraCreateTimestamp">20120508124524Z</a>
+        <a n="objectClass">zimbraAlias</a>
+      </alias>
+      <alias id="6e88f8d1-0787-49b3-a2f0-0e779f511a6b" name="christopher3@mail.webruimte.eu" targetName="chris@mail.webruimte.eu" type="account">
+        <a n="uid">christopher3</a>
+        <a n="zimbraAliasTargetId">7ab4e5f5-f6a4-47bb-be18-e12b4b092a67</a>
+        <a n="zimbraId">6e88f8d1-0787-49b3-a2f0-0e779f511a6b</a>
+        <a n="zimbraCreateTimestamp">20120508124641Z</a>
+        <a n="objectClass">zimbraAlias</a>
+      </alias>
+      <alias id="fc1ad24b-30ad-4ac6-a68b-e1f54f096338" name="christopher4@mail.webruimte.eu" targetName="chris@mail.webruimte.eu" type="account">
+        <a n="uid">christopher4</a>
+        <a n="zimbraAliasTargetId">7ab4e5f5-f6a4-47bb-be18-e12b4b092a67</a>
+        <a n="zimbraId">fc1ad24b-30ad-4ac6-a68b-e1f54f096338</a>
+        <a n="zimbraCreateTimestamp">20120508124831Z</a>
+        <a n="objectClass">zimbraAlias</a>
+      </alias>
+      <alias id="3f35eec5-f23a-4cff-97b3-b8f09d9734ea" name="christopher5@mail.webruimte.eu" targetName="chris@mail.webruimte.eu" type="account">
+        <a n="uid">christopher5</a>
+        <a n="zimbraAliasTargetId">7ab4e5f5-f6a4-47bb-be18-e12b4b092a67</a>
+        <a n="zimbraId">3f35eec5-f23a-4cff-97b3-b8f09d9734ea</a>
+        <a n="zimbraCreateTimestamp">20120508125445Z</a>
+        <a n="objectClass">zimbraAlias</a>
+      </alias>
+      <alias id="50542f55-b760-4c60-ae46-9d9b0aa041d4" name="christopher@mail.webruimte.eu" targetName="chris@mail.webruimte.eu" type="account">
+        <a n="uid">christopher</a>
+        <a n="zimbraAliasTargetId">7ab4e5f5-f6a4-47bb-be18-e12b4b092a67</a>
+        <a n="zimbraId">50542f55-b760-4c60-ae46-9d9b0aa041d4</a>
+        <a n="zimbraCreateTimestamp">20120508124414Z</a>
+        <a n="objectClass">zimbraAlias</a>
+      </alias>
+    </SearchDirectoryResponse>
+  </soap:Body>
+</soap:Envelope>

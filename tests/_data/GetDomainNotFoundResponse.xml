@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <context xmlns="urn:zimbra">
+      <change token="14749"/>
+    </context>
+  </soap:Header>
+  <soap:Body>
+    <soap:Fault>
+      <soap:Code>
+        <soap:Value>soap:Sender</soap:Value>
+      </soap:Code>
+      <soap:Reason>
+        <soap:Text>no such domain: d60c6cbc-6c53-4516e-ad3d-3b75117cbc64</soap:Text>
+      </soap:Reason>
+      <soap:Detail>
+        <Error xmlns="urn:zimbra">
+          <Code>account.NO_SUCH_DOMAIN</Code>
+          <Trace>btpool0-6://mail.webruimte.eu:7071/service/admin/soap:1338370058990:111301f9a3800192</Trace>
+        </Error>
+      </soap:Detail>
+    </soap:Fault>
+  </soap:Body>
+</soap:Envelope>
