@@ -89,6 +89,136 @@ class SoapClientTest extends PHPUnit_Framework_TestCase
         $soapClient->auth('foo', 'bar');
     }
 
+    public function testAddContextChild()
+    {
+        // Mock the curl library
+        $curlClient = $this->_getCurlClientMock();
+
+        // Create a new soap client
+        $soapClient = new \Zimbra\ZCS\SoapClient();
+        $soapClient->setCurlClient( $curlClient );
+
+        // Add context child
+        $soapClient->addContextChild('foo', 'bar');
+
+        // Test if context child is set
+        $context = $soapClient->getContext();
+        $this->assertEquals('bar', $context->foo->__toString());
+    }
+
+    public function testUpdateContextChild()
+    {
+        // Mock the curl library
+        $curlClient = $this->_getCurlClientMock();
+
+        // Create a new soap client
+        $soapClient = new \Zimbra\ZCS\SoapClient();
+        $soapClient->setCurlClient( $curlClient );
+
+        // Add context child
+        $soapClient->addContextChild('foo', 'bar');
+
+        // Update it with a new value
+        $soapClient->addContextChild('foo', 'baz');
+
+        // Test if context child is set
+        $context = $soapClient->getContext();
+        $this->assertEquals('baz', $context->foo->__toString());
+    }
+
+    public function testRequestAcceptsParams()
+    {
+        // Mock the curl library
+        $curlClient = $this->_getCurlClientMock();
+        $curlClient->shouldReceive('execute')->andReturn($this->_getAuthSuccessXml());
+
+        // Create a new soap client
+        $soapClient = new \Zimbra\ZCS\SoapClient();
+        $soapClient->setCurlClient( $curlClient );
+
+        // Execute the auth request
+        $soapClient->auth('foo', 'bar');
+
+        // Execute an arbitrary request
+        $soapClient->request("foobar", array(), array('id' => "foobarbaz"));
+
+        // Check if the <id> element is present
+        $this->assertContains("<id>foobarbaz</id>", $soapClient->getXml());
+    }
+
+    public function testRequestAcceptsAttributes()
+    {
+        // Mock the curl library
+        $curlClient = $this->_getCurlClientMock();
+        $curlClient->shouldReceive('execute')->andReturn($this->_getAuthSuccessXml());
+
+        // Create a new soap client
+        $soapClient = new \Zimbra\ZCS\SoapClient();
+        $soapClient->setCurlClient( $curlClient );
+
+        // Execute the auth request
+        $soapClient->auth('foo', 'bar');
+
+        // Execute an arbitrary request
+        $soapClient->request("foobar", array('name' => "fizzbuzz"));
+
+        // Check if the <id> element is present
+        $this->assertContains('name="fizzbuzz"', $soapClient->getXml());
+    }
+
+    public function testRequestAcceptsAttributesAsParams()
+    {
+        // Mock the curl library
+        $curlClient = $this->_getCurlClientMock();
+        $curlClient->shouldReceive('execute')->andReturn($this->_getAuthSuccessXml());
+
+        // Create a new soap client
+        $soapClient = new \Zimbra\ZCS\SoapClient();
+        $soapClient->setCurlClient( $curlClient );
+
+        // Execute the auth request
+        $soapClient->auth('foo', 'bar');
+
+        // Execute an arbitrary request
+        $soapClient->request("foobar", array(), array(
+            'attributes' => array(
+                'foo' => 'bar',
+                'baz' => 'fizz'
+            ),
+            'account' => array(
+                '_'  => 'foobar',
+                'by' => 'fizzbuzz',
+            )
+        ));
+
+        // Check if the <a> and <account> elements are present
+        $this->assertContains('<a n="foo">bar</a>', $soapClient->getXml());
+        $this->assertContains('<a n="baz">fizz</a>', $soapClient->getXml());
+        $this->assertContains('<account by="fizzbuzz">foobar</account>', $soapClient->getXml());
+    }
+
+    public function testDebug()
+    {
+        // Mock the curl library
+        $curlClient = $this->_getCurlClientMock();
+        $curlClient->shouldReceive('execute')->andReturn($this->_getAuthSuccessXml());
+
+        // Create a new soap client
+        $soapClient = new \Zimbra\ZCS\SoapClient();
+        $soapClient->setCurlClient( $curlClient );
+
+        // Set debug mode
+        \Zimbra\ZCS\SoapClient::$debug = true;
+
+        // Execute the auth request
+        ob_start();
+        $soapClient->auth('foo', 'bar');
+        $output = ob_get_clean();
+
+        $this->assertContains('## REQUEST', $output);
+        $this->assertContains('## RESPONSE', $output);
+    }
+
     public function _getCurlClientMock()
     {
         $curlClient = m::mock('\Zimbra\ZCS\CurlClient');

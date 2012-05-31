@@ -86,7 +86,7 @@ class Account extends \Zimbra\ZCS\Entity
      */
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        // the actual emailaddress should never be NULL or a blank string
+        // the name should never be NULL or a blank string when creating an account
         $metadata->addPropertyConstraint('name', new Assert\NotNull(array(
             'groups' => array('create')
         )));

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <context xmlns="urn:zimbra">
+      <change token="14779"/>
+    </context>
+  </soap:Header>
+  <soap:Body>
+    <soap:Fault>
+      <soap:Code>
+        <soap:Value>soap:Sender</soap:Value>
+      </soap:Code>
+      <soap:Reason>
+        <soap:Text>domain not empty: mail.webruimte.eu (remaining entries:[
+    uid=admin,ou=people,dc=mail,dc=webruimte,dc=eu
+    ][
+        uid=root,ou=people,dc=mail,dc=webruimte,dc=eu
+        ][
+            uid=postmaster,ou=people,dc=mail,dc=webruimte,dc=eu
+            ][
+                uid=spam.vwqbht2hdd,ou=people,dc=mail,dc=webruimte,dc=eu
+            ]...)</soap:Text>
+      </soap:Reason>
+      <soap:Detail>
+        <Error xmlns="urn:zimbra">
+          <Code>account.DOMAIN_NOT_EMPTY</Code>
+          <Trace>btpool0-0://mail.webruimte.eu:7071/service/admin/soap:1338377373270:111301f9a3800192</Trace>
+        </Error>
+      </soap:Detail>
+    </soap:Fault>
+  </soap:Body>
+</soap:Envelope>

@@ -1,10 +1,18 @@
-<phpunit bootstrap="./Bootstrap.php">
-  <testsuites>
-    <testsuite name="Nucleus Zimbra tests">
-      <directory>./</directory>
-    </testsuite>
-  </testsuites>
-  <listeners>
-    <listener class="\Mockery\Adapter\Phpunit\TestListener" file="Mockery/Adapter/Phpunit/TestListener.php"></listener>
-  </listeners>
+<phpunit bootstrap="./Bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Nucleus Zimbra tests">
+            <directory>./</directory>
+        </testsuite>
+    </testsuites>
+    <listeners>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener" file="Mockery/Adapter/Phpunit/TestListener.php"></listener>
+    </listeners>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../src/Nucleus/Zimbra/ZCS</directory>
+            <exclude>
+                <file>../src/Nucleus/Zimbra/ZCS/CurlClient.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

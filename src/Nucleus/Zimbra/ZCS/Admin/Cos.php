@@ -31,25 +31,18 @@ class Cos
      * Fetches a single class of service from the webservice and returns it
      * as a \Zimbra\ZCS\Entity\Cos object
      * @param string $cos
-     * @param string $by
-     * @param array $attrs
      * @return \Zimbra\ZCS\Entity\Cos
      */
-    public function getCos($cos, $by = 'id', $attrs = array())
+    public function getCos($cos)
     {
-        $attributes = array();
-        if (!empty($attrs)) {
-            $attributes['attrs'] = implode(',', $attrs);
-        }
-
         $params = array(
             'cos' => array(
                 '_'  => $cos,
-                'by' => $by,
+                'by' => 'id',
             )
         );
 
-        $response = $this->soapClient->request('GetCosRequest', $attributes, $params);
+        $response = $this->soapClient->request('GetCosRequest', array(), $params);
         $coslist = $response->children()->GetCosResponse->children()->cos;
 
         return \Zimbra\ZCS\Entity\Cos::createFromXml($coslist);

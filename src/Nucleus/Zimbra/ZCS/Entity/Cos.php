@@ -9,6 +9,10 @@
 
 namespace Zimbra\ZCS\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContext;
+
 class Cos extends \Zimbra\ZCS\Entity
 {
     /**
@@ -25,6 +29,19 @@ class Cos extends \Zimbra\ZCS\Entity
     protected static $_datamap = array(
         'cn' => 'name'
     );
+
+    /**
+     * Validation for the properties of this Entity
+     *
+     * @static
+     * @param \Symfony\Component\Validator\Mapping\ClassMetadata $metadata
+     */
+    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        // Name should never be NULL or a blank string
+        $metadata->addPropertyConstraint('name', new Assert\NotNull());
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank());
+    }
 
     /**
      * @param String $name

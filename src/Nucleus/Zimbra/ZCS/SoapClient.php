@@ -46,18 +46,22 @@ class SoapClient
      */
     public function __construct($server = null, $port = null, $username = null, $password = null)
     {
+        // @codeCoverageIgnoreStart
         if($server && $port) {
             $curlClient = new \Zimbra\ZCS\CurlClient("https://$server:$port/service/admin/soap");
             $this->setCurlClient($curlClient);
         }
+        // @codeCoverageIgnoreEnd
 
         $this->message = new \SimpleXMLElement('<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"></soap:Envelope>');
         $this->context = $this->message->addChild('Header')->addChild('context', null, 'urn:zimbra');
         $this->message->addChild('Body');
 
+        // @codeCoverageIgnoreStart
         if($username && $password && $this->getCurlClient()){
             $this->auth($username, $password);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
