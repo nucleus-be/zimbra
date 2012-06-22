@@ -128,8 +128,10 @@ abstract class Entity
 
     /**
      * Validated this Entity according to the rules specified in self::loadValidatorMetadata
-     * @throws \Zimbra\ZCS\Exception
+     *
      * @param null $groups
+     * @throws Exception\InvalidEntity
+     * @throws Exception
      * @return \Symfony\Component\Validator\ConstraintViolationList
      */
     public function validate($groups = null)

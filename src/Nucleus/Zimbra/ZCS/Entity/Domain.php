@@ -38,8 +38,12 @@ class Domain extends \Zimbra\ZCS\Entity
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
         // Name should never be NULL or a blank string
-        $metadata->addPropertyConstraint('name', new Assert\NotNull());
-        $metadata->addPropertyConstraint('name', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('name', new Assert\NotNull(array(
+            'groups' => array('create')
+        )));
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
+            'groups' => array('create')
+        )));
 
         // DefaultCosId should either be a non-blank string or NULL
         $metadata->addConstraint(new Assert\Callback(array('_validateDefaultCosId')));
