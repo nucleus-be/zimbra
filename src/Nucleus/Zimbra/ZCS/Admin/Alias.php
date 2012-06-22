@@ -15,6 +15,7 @@ class Alias
      * Fetches a single alias from the webservice and returns it
      * as a \Zimbra\ZCS\Entity\Alias object
      * @param string $alias_id
+     * @throws \Zimbra\ZCS\Exception\Webservice
      * @return \Zimbra\ZCS\Entity\Alias
      */
     public function getAlias($alias_id)
@@ -27,9 +28,14 @@ class Alias
         );
 
         $response = $this->soapClient->request('SearchDirectoryRequest', $attributes, $params);
-        $aliasList = $response->children()->SearchDirectoryResponse->children();
 
-        return \Zimbra\ZCS\Entity\Alias::createFromXml($aliasList[0]);
+        $hits = intval((string)$response->children()->SearchDirectoryResponse['searchTotal']);
+        if($hits <= 0) {
+            throw new \Zimbra\ZCS\Exception\Webservice('account.NO_SUCH_ALIAS');
+        } else {
+            $aliasList = $response->children()->SearchDirectoryResponse->children();
+            return \Zimbra\ZCS\Entity\Alias::createFromXml($aliasList[0]);
+        }
     }
 
     /**
