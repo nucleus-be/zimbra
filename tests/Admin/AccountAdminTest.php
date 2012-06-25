@@ -116,7 +116,11 @@ class AccountAdminTest extends PHPUnit_Framework_TestCase
     public function testGetQuotaUsage()
     {
         $soapClient = $this->_getMockedSoapClient();
-        $soapClient->getCurlClient()->shouldReceive('execute')->andReturn(file_get_contents(__DIR__.'/../_data/GetQuotaUsageResponse.xml'));
+        $soapClient->getCurlClient()
+            ->shouldReceive('execute')->andReturn(
+                file_get_contents(__DIR__.'/../_data/GetAccountResponse.xml'),
+                file_get_contents(__DIR__.'/../_data/GetQuotaUsageResponse.xml')
+            );
 
         $admin = new \Zimbra\ZCS\Admin\Account($soapClient);
         $usage = $admin->getAccountQuotaUsage('8282b006-cc43-4cde-86e8-87a4cf1c5f19');

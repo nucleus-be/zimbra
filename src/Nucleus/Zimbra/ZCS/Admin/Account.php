@@ -155,7 +155,7 @@ class Account
      */
     public function getAccountQuotaUsage($account_id)
     {
-        // Get the account to see if it exixts, if not
+        // Get the account to see if it exists, if not
         // an exception will be thrown
         $account = $this->getAccount($account_id);
 
