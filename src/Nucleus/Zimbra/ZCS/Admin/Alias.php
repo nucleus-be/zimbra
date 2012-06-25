@@ -46,6 +46,10 @@ class Alias
      */
     public function getAliasListByAccount($account_id)
     {
+        // Check if the account exists
+        $accountAdmin = new \Zimbra\ZCS\Admin\Account($this->getSoapClient());
+        $account = $accountAdmin->getAccount($account_id);
+
         $attributes = array(
             'types' => 'aliases'
         );
