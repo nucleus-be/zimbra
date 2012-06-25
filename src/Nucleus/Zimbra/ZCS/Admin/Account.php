@@ -155,6 +155,11 @@ class Account
      */
     public function getAccountQuotaUsage($account_id)
     {
+        // Get the account to see if it exixts, if not
+        // an exception will be thrown
+        $account = $this->getAccount($account_id);
+
+        // Fetch the quota usage
         $response = $this->soapClient->request('GetQuotaUsageRequest');
         $xpathQuery = sprintf("//*[local-name()='account' and @id='%s']", $account_id);
         $record = $response->xpath($xpathQuery);
