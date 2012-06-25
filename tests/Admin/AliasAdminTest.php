@@ -24,8 +24,18 @@ class AliasAdminTest extends PHPUnit_Framework_TestCase
 
     public function testGetInexistingAliasThrowsException()
     {
-        // Todo: make sure requesting an inexisting alias throws the right exception!
-        $this->markTestSkipped("Behaviour not implemented yet in AliasAdmin!");
+        $this->setExpectedException('Zimbra\ZCS\Exception\Webservice');
+
+        $soapClient = $this->_getMockedSoapClient();
+        $soapClient->getCurlClient()->shouldReceive('execute')->andReturn(file_get_contents(__DIR__.'/../_data/GetAliasNotFoundResponse.xml'));
+
+        try {
+            $admin = new \Zimbra\ZCS\Admin\Alias($soapClient);
+            $account = $admin->getAlias('foobarbaz');
+        } catch (\Zimbra\ZCS\Exception\Webservice $e) {
+            $this->assertEquals($e->getMessage(), 'account.NO_SUCH_ALIAS');
+            throw $e;
+        }
     }
 
     public function testGetAliasListFromAccountReturnsArrayWithAliasEntities()
