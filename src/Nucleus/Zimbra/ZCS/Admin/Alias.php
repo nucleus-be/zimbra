@@ -31,7 +31,8 @@ class Alias
 
         $hits = intval((string)$response->children()->SearchDirectoryResponse['searchTotal']);
         if($hits <= 0) {
-            throw new \Zimbra\ZCS\Exception\Webservice('account.NO_SUCH_ALIAS');
+            // In case there are no aliasses found we simulate a soap fault to streamline the API
+            throw \Zimbra\ZCS\SoapClient::getExceptionForFault('account.NO_SUCH_ALIAS');
         } else {
             $aliasList = $response->children()->SearchDirectoryResponse->children();
             return \Zimbra\ZCS\Entity\Alias::createFromXml($aliasList[0]);

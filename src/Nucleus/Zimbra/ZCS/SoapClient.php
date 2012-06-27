@@ -216,7 +216,7 @@ class SoapClient
         // If the response is a Fault throw a webservice exception
         $fault = $xml->children('soap', true)->Body->Fault;
         if ($fault) {
-            throw new \Zimbra\ZCS\Exception\Webservice($fault->Detail->children()->Error->Code->__toString());
+            throw self::getExceptionForFault($fault->Detail->children()->Error->Code->__toString());
         }
 
         // Return the body element from the XML
@@ -238,6 +238,40 @@ class SoapClient
         @$dom->loadXML($xml);
         $output = $dom->saveXML();
         return $escape ? htmlentities($output, ENT_QUOTES, 'utf-8') : $output;
+    }
+
+    public static function getExceptionForFault($faultMessage)
+    {
+        switch($faultMessage) {
+            case 'account.NO_SUCH_DOMAIN':
+                $exception = new \Zimbra\ZCS\Exception\EntityNotFound(
+                    'Domain cannot be found',
+                    \Zimbra\ZCS\Exception\EntityNotFound::ERR_DOMAIN_NOT_FOUND
+                );
+                break;
+            case 'account.NO_SUCH_ACCOUNT':
+                $exception = new \Zimbra\ZCS\Exception\EntityNotFound(
+                    'Account cannot be found',
+                    \Zimbra\ZCS\Exception\EntityNotFound::ERR_ACCOUNT_NOT_FOUND
+                );
+                break;
+            case 'account.NO_SUCH_ALIAS':
+                $exception = new \Zimbra\ZCS\Exception\EntityNotFound(
+                    'Alias cannot be found',
+                    \Zimbra\ZCS\Exception\EntityNotFound::ERR_ALIAS_NOT_FOUND
+                );
+                break;
+            case 'account.NO_SUCH_COS':
+                $exception = new \Zimbra\ZCS\Exception\EntityNotFound(
+                    'Cos cannot be found',
+                    \Zimbra\ZCS\Exception\EntityNotFound::ERR_COS_NOT_FOUND
+                );
+                break;
+            default:
+                $exception = new \Zimbra\ZCS\Exception\Webservice($faultMessage);
+        }
+
+        return $exception;
     }
 
 }
