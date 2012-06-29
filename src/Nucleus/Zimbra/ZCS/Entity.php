@@ -56,7 +56,7 @@ abstract class Entity
      * @param \stdClass $json
      * @return Entity
      */
-    public static function createFromJson(\stdClass $json)
+    public static function createFromJson(\stdClass $json = null)
     {
         // Get the properties from the datamap
         $properties = array_values(self::getDataMap());
