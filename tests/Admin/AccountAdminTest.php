@@ -22,7 +22,7 @@ class AccountAdminTest extends PHPUnit_Framework_TestCase
 
     public function testGetInexistingAccountThrowsException()
     {
-        $this->setExpectedException('Zimbra\ZCS\Exception\Webservice');
+        $this->setExpectedException('Zimbra\ZCS\Exception\EntityNotFound');
 
         $soapClient = $this->_getMockedSoapClient();
         $soapClient->getCurlClient()->shouldReceive('execute')->andReturn(file_get_contents(__DIR__.'/../_data/GetAccountNotFoundResponse.xml'));
