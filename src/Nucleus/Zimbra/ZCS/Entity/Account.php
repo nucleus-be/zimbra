@@ -105,6 +105,10 @@ class Account extends \Zimbra\ZCS\Entity
         $metadata->addPropertyConstraint('password', new Assert\NotBlank(array(
             'groups' => array('create')
         )));
+        $metadata->addPropertyConstraint('password', new Assert\MinLength(array(
+            'groups' => array('create', 'update'),
+            'limit'  => 6
+        )));
 
         // display name max length
         $metadata->addPropertyConstraint('displayname', new Assert\MaxLength(array(
