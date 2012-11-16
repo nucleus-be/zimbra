@@ -48,7 +48,7 @@ class Account extends \Zimbra\ZCS\Entity
      * @property
      * @var string
      */
-    private $cosId;
+    private $cosid;
 
     /**
      * The username
@@ -72,18 +72,27 @@ class Account extends \Zimbra\ZCS\Entity
     private $host;
 
     /**
+     * The mobilesync setting for this account
+     * Only available when the Mobile Sync addon is installed in ZCS
+     * @property
+     * @var string
+     */
+    private $mobilesync;
+
+    /**
      * Extra field mapping
      * @var array
      */
     protected static $_datamap = array(
-        '@name' => 'name', // @ prefix indicates an attribute
-        'displayName' => 'displayname',
-        'uid' => 'username',
-        'userPassword' => 'password',
-        'zimbraMailHost' => 'host',
-        'zimbraCOSId' => 'cosId',
-        'zimbraAccountStatus' => 'accountstatus',
-        'zimbraMailQuota' => 'mailquota'
+        '@name'                          => 'name', // @ prefix indicates an attribute
+        'displayName'                    => 'displayname',
+        'uid'                            => 'username',
+        'userPassword'                   => 'password',
+        'zimbraMailHost'                 => 'host',
+        'zimbraCOSId'                    => 'cosid',
+        'zimbraAccountStatus'            => 'accountstatus',
+        'zimbraMailQuota'                => 'mailquota',
+        'zimbraFeatureMobileSyncEnabled' => 'mobilesync'
     );
 
     /**
@@ -141,6 +150,12 @@ class Account extends \Zimbra\ZCS\Entity
         )));
         $metadata->addPropertyConstraint('accountstatus', new Assert\NotNull(array(
             'groups' => array('create', 'update')
+        )));
+
+        // MobileSync has fixed set of options
+        $metadata->addPropertyConstraint('mobilesync', new Assert\Choice(array(
+            'groups' => array('create', 'update'),
+            'choices' => array('true', 'false', TRUE, FALSE, 1, 0)
         )));
 
     }
@@ -272,20 +287,40 @@ class Account extends \Zimbra\ZCS\Entity
     }
 
     /**
-     * @param string $cosId
+     * @param string $cosid
      * @return \Zimbra\ZCS\Entity\Account
      */
-    public function setCosId($cosId)
+    public function setCosid($cosid)
     {
-        $this->cosId = $cosId;
+        $this->cosid = $cosid;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getCosId()
+    public function getCosid()
     {
-        return $this->cosId;
+        return $this->cosid;
+    }
+
+    /**
+     * @param mixed $mobilesync
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function setMobileSync($mobilesync)
+    {
+        $value = (in_array($mobilesync, array('false', 0, false))) ? false : true;
+
+        $this->mobilesync = $value;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMobilesync()
+    {
+        return $this->mobilesync;
     }
 }
