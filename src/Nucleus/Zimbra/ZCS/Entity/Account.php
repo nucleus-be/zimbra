@@ -310,7 +310,7 @@ class Account extends \Zimbra\ZCS\Entity
      */
     public function setMobileSync($mobilesync)
     {
-        $value = (in_array($mobilesync, array('false', 0, false))) ? false : true;
+        $value = in_array($mobilesync, array('FALSE', 'false', 0, false), true) ? false : true;
 
         $this->mobilesync = $value;
         return $this;
