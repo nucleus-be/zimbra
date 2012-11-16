@@ -2,7 +2,14 @@
 
 ## Usage
 
-`TODO`
+    # Make sure you include the autoloader so all dependencies can be loaded (see getcomposer.org)
+    include_once './vendor/autoload.php';
+     
+    # Create a soapclient with the correct params of your ZCS server
+    $soapClient = new \Zimbra\ZCS\SoapClient("host", "port", "username", "password");
+
+    # Construct an admin with the soapClient
+    $admin = new \Zimbra\ZCS\Admin\Account($soapClient);
 
 ## Exceptions and Errorcodes
 
