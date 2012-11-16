@@ -24,14 +24,27 @@ class AliasAdminTest extends PHPUnit_Framework_TestCase
 
     public function testGetInexistingAliasThrowsException()
     {
-        // Todo: make sure requesting an inexisting alias throws the right exception!
-        $this->markTestSkipped("Behaviour not implemented yet in AliasAdmin!");
+        $this->setExpectedException('Zimbra\ZCS\Exception\EntityNotFound');
+
+        $soapClient = $this->_getMockedSoapClient();
+        $soapClient->getCurlClient()->shouldReceive('execute')->andReturn(file_get_contents(__DIR__.'/../_data/GetAliasNotFoundResponse.xml'));
+
+        try {
+            $admin = new \Zimbra\ZCS\Admin\Alias($soapClient);
+            $account = $admin->getAlias('foobarbaz');
+        } catch (\Zimbra\ZCS\Exception\Webservice $e) {
+            $this->assertEquals($e->getMessage(), 'account.NO_SUCH_ALIAS');
+            throw $e;
+        }
     }
 
     public function testGetAliasListFromAccountReturnsArrayWithAliasEntities()
     {
         $soapClient = $this->_getMockedSoapClient();
-        $soapClient->getCurlClient()->shouldReceive('execute')->andReturn(file_get_contents(__DIR__.'/../_data/GetAliasListByAccountResponse.xml'));
+        $soapClient->getCurlClient()->shouldReceive('execute')->andReturn(
+            file_get_contents(__DIR__.'/../_data/GetAccountResponse.xml'),
+            file_get_contents(__DIR__.'/../_data/GetAliasListByAccountResponse.xml')
+        );
 
         $admin = new \Zimbra\ZCS\Admin\Alias($soapClient);
         $alias = $admin->getAliasListByAccount('7ab4e5f5-f6a4-47bb-be18-e12b4b092a67');

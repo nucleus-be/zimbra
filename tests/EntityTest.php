@@ -93,6 +93,20 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $array['zimbraDomainDefaultCOSId']);
     }
 
+    public function testDomainFromJsonWithoutNameValidates()
+    {
+        $jsonData = json_decode('{"defaultCosId" : "a8f379c0-6a0e-48bf-98c7-3e7facb294d3"}');
+
+        $domain = \Zimbra\ZCS\Entity\Domain::createFromJson($jsonData);
+        $domain->setValidator(new Validator(
+            new ClassMetadataFactory(new StaticMethodLoader()),
+            new ConstraintValidatorFactory()
+        ));
+
+        $result = $domain->validate();
+        $this->assertEquals($result->count(), 0);
+    }
+
     private function _getDomainJson($name = 'foobar', $defaultCosId = 'fizzbuzz')
     {
         $jsonString = '{"name":"'.$name.'","defaultCosId":"'.$defaultCosId.'"}';

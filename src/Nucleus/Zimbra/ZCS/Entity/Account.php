@@ -44,6 +44,13 @@ class Account extends \Zimbra\ZCS\Entity
     private $accountstatus = "active";
 
     /**
+     * The COS id of this account
+     * @property
+     * @var string
+     */
+    private $cosId;
+
+    /**
      * The username
      * @property
      * @var string
@@ -74,6 +81,7 @@ class Account extends \Zimbra\ZCS\Entity
         'uid' => 'username',
         'userPassword' => 'password',
         'zimbraMailHost' => 'host',
+        'zimbraCOSId' => 'cosId',
         'zimbraAccountStatus' => 'accountstatus',
         'zimbraMailQuota' => 'mailquota'
     );
@@ -104,6 +112,10 @@ class Account extends \Zimbra\ZCS\Entity
         )));
         $metadata->addPropertyConstraint('password', new Assert\NotBlank(array(
             'groups' => array('create')
+        )));
+        $metadata->addPropertyConstraint('password', new Assert\MinLength(array(
+            'groups' => array('create', 'update'),
+            'limit'  => 6
         )));
 
         // display name max length
@@ -257,5 +269,23 @@ class Account extends \Zimbra\ZCS\Entity
     public function getHost()
     {
         return $this->host;
+    }
+
+    /**
+     * @param string $cosId
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function setCosId($cosId)
+    {
+        $this->cosId = $cosId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCosId()
+    {
+        return $this->cosId;
     }
 }
