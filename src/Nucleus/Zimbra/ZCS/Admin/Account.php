@@ -86,6 +86,41 @@ class Account
     }
 
     /**
+     * Searches the whole account directory for a matching account. Searches on mail address
+     * and aliasses. You can 
+     * @param string $query The search query
+     * @param string $domain Limit the search to this domain
+     * @param boolean $ldapFilter Use the $query param as a full LDAP filter, when this is false (default)
+     *                            the $query is used as the matching part for a filter on the mail attribute
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function searchAccountList($query = '', $domain = false, $ldapFilter = false)
+    {
+        $attributes = array(
+            'applyCos' => 1,
+            'types' => 'accounts'
+        );
+        if($domain !== false){
+            $attributes['domain'] = $domain;
+        }
+
+        $query = $ldapFilter ? $query : 'mail='.$query.'';
+        $params = array(
+            'query' => htmlspecialchars($query, ENT_QUOTES) 
+        );
+
+        $response = $this->soapClient->request('SearchDirectoryRequest', $attributes, $params);
+        $accountList = $response->children()->SearchDirectoryResponse->children();
+
+        $results = array();
+        foreach ($accountList as $account) {
+            $results[] = \Zimbra\ZCS\Entity\Account::createFromXml($account);
+        }
+
+        return $results;
+    }
+
+    /**
      * Creates a new account in the ZCS soap webservice
      * @param \Zimbra\ZCS\Entity\Account $account
      * @return \Zimbra\ZCS\Entity
