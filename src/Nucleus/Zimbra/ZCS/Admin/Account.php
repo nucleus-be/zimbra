@@ -150,17 +150,18 @@ class Account
     /**
      * Returns the usage limit and current usage for an account identified
      * by the $account_id parameter
-     * @param $account_id
+     * @param string $account_id
      * @return array
      */
-    public function getAccountQuotaUsage($account_id)
+    public function getAccountQuotaUsage($account_id = false)
     {
         // Get the account to see if it exists, if not
         // an exception will be thrown
         $account = $this->getAccount($account_id);
+        $domain = $account->getDomain();
 
         // Fetch the quota usage
-        $response = $this->soapClient->request('GetQuotaUsageRequest');
+        $response = $this->soapClient->request('GetQuotaUsageRequest', array('domain' => $domain));
         $xpathQuery = sprintf("//*[local-name()='account' and @id='%s']", $account_id);
         $record = $response->xpath($xpathQuery);
 
@@ -168,6 +169,56 @@ class Account
             'limit' => (int)$record[0]['limit'],
             'used'  => (int)$record[0]['used']
         );
+    }
+
+    /**
+     * Returns the usage limit and current usage for all accounts in a domain
+     * @param string $domain The string repretenstation of the domain, not the actual domainId!!
+     * @return array
+     */
+    public function getAllAccountQuotaUsage()
+    {
+        // Fetch the quota usage
+        $response = $this->soapClient->request('GetQuotaUsageRequest');
+
+        // Format and respond
+        return $this->_formatQuotaResponse($response);
+    }
+
+    /**
+     * Returns the usage limit and current usage for all accounts in a domain
+     * @param string $domain The string repretenstation of the domain, not the actual domainId!!
+     * @return array
+     */
+    public function getAccountQuotaUsageByDomain($domain)
+    {
+        $attributes = array(
+            'domain' => $domain
+        );
+
+        // Fetch the quota usage
+        $response = $this->soapClient->request('GetQuotaUsageRequest', $attributes);
+
+        // Format and respond
+        return $this->_formatQuotaResponse($response);
+    }
+
+    /**
+     * Formats a response with multiple accounts' quota details into an array
+     * @param  SimpleXMLElement $response The XML response from the server
+     * @return array
+     */ 
+    private function _formatQuotaResponse($response)
+    {
+        $data = array();
+        foreach($response->children()->children() as $account) {
+            $attributes = ($account->attributes());
+            $data[(string)$attributes['id']] = array(
+                'limit' => (int)$attributes['limit'],
+                'used' => (int)$attributes['used']
+            );
+        }
+        return $data;
     }
 
     /**
