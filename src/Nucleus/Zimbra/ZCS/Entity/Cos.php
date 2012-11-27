@@ -49,6 +49,7 @@ class Cos extends \Zimbra\ZCS\Entity
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**

@@ -30,6 +30,13 @@ class Domain extends \Zimbra\ZCS\Entity
     private $name = null;
 
     /**
+     * The domain status (active, locked, closed, maintenance, suspended)
+     * @property
+     * @var string
+     */
+    private $domainStatus = null;
+
+    /**
      * Validation for the properties of this Entity
      *
      * @static
@@ -42,6 +49,15 @@ class Domain extends \Zimbra\ZCS\Entity
             'groups' => array('create')
         )));
         $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
+            'groups' => array('create')
+        )));
+
+        // Domain status has fixed set of options and is required
+        $metadata->addPropertyConstraint('domainStatus', new Assert\Choice(array(
+            'groups' => array('create', 'update'),
+            'choices' => array('active', 'closed', 'locked', 'pending', 'maintenance')
+        )));
+        $metadata->addPropertyConstraint('accountstatus', new Assert\NotNull(array(
             'groups' => array('create')
         )));
 
@@ -62,12 +78,14 @@ class Domain extends \Zimbra\ZCS\Entity
      */
     protected static $_datamap = array(
         'zimbraDomainDefaultCOSId' => 'defaultCosId',
-        'zimbraDomainName' => 'name'
+        'zimbraDomainName' => 'name',
+        'zimbraDomainStatus' => 'domainStatus'
     );
 
     public function setDefaultCosId($defaultCosId)
     {
         $this->defaultCosId = $defaultCosId;
+        return $this;
     }
 
     public function getDefaultCosId()
@@ -78,10 +96,23 @@ class Domain extends \Zimbra\ZCS\Entity
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     public function getName()
     {
         return $this->name;
     }
+
+    public function setDomainStatus($status)
+    {
+        $this->domainStatus = $status;
+        return $this;
+    }
+
+    public function getDomainStatus()
+    {
+        return $this->domainStatus;
+    }
+
 }
