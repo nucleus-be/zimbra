@@ -57,7 +57,7 @@ class Domain extends \Zimbra\ZCS\Entity
             'groups' => array('create', 'update'),
             'choices' => array('active', 'closed', 'locked', 'pending', 'maintenance')
         )));
-        $metadata->addPropertyConstraint('accountstatus', new Assert\NotNull(array(
+        $metadata->addPropertyConstraint('domainStatus', new Assert\NotNull(array(
             'groups' => array('create')
         )));
 
