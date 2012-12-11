@@ -73,7 +73,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $array = $domain->toArray();
 
         $this->assertInternalType('array', $array);
-        $this->assertEquals(3,     sizeof($array));
+        $this->assertEquals(4,     sizeof($array));
         $this->assertEquals(null,  $array['id']);
         $this->assertEquals('foo', $array['name']);
         $this->assertEquals('bar', $array['defaultCosId']);
@@ -87,7 +87,7 @@ class EntityTest extends PHPUnit_Framework_TestCase
         $array = $domain->toPropertyArray();
 
         $this->assertInternalType('array', $array);
-        $this->assertEquals(3,     sizeof($array));
+        $this->assertEquals(4,     sizeof($array));
         $this->assertEquals(null,  $array['zimbraId']);
         $this->assertEquals('foo', $array['zimbraDomainName']);
         $this->assertEquals('bar', $array['zimbraDomainDefaultCOSId']);

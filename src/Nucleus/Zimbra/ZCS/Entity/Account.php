@@ -330,6 +330,7 @@ class Account extends \Zimbra\ZCS\Entity
      */
     public function getDomain()
     {
-        return array_pop(explode('@', $this->getName()));
+        $data = explode('@', $this->getName());
+        return array_pop($data);
     }
 }
