@@ -166,7 +166,7 @@ class SoapClient
                     case 'attributes':
                         foreach ($value as $l => $b) {
                             if(is_bool($b)){
-                                $b = ($b === true) ? 'true':'false';
+                                $b = ($b === true) ? 'TRUE' : 'FALSE';
                             }
                             $newParam = $actionChild->addChild('a', $b);
                             $newParam->addAttribute('n', $l);
@@ -177,7 +177,7 @@ class SoapClient
                         unset($value['_']);
                         foreach ($value as $l => $b) {
                             if(is_bool($b)){
-                                $b = ($b === true) ? 'true':'false';
+                                $b = ($b === true) ? 'TRUE' : 'FALSE';
                             }
                             $newParam->addAttribute($l, $b);
                         }
