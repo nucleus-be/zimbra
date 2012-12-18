@@ -25,5 +25,6 @@
         "psr-0": {
             "Zimbra": "src/Nucleus"
         }
-    }
+    },
+    "minimum-stability" : "dev"
 }
