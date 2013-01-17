@@ -103,10 +103,14 @@ class DomainAdminTest extends PHPUnit_Framework_TestCase
     public function testDeleteDomain()
     {
         $soapClient = $this->_getMockedSoapClient();
-        $soapClient->getCurlClient()->shouldReceive('execute')->andReturn(file_get_contents(__DIR__.'/../_data/DeleteDomainResponse.xml'));
+        $soapClient->getCurlClient()
+            ->shouldReceive('execute')->andReturn(
+                file_get_contents(__DIR__.'/../_data/GetDomainResponse.xml'),
+                file_get_contents(__DIR__.'/../_data/DeleteDomainResponse.xml')
+            );
 
         $admin = new \Zimbra\ZCS\Admin\Domain($soapClient);
-        $response = $admin->deleteDomain('225e58d1-367a-4337-af00-2acbc2307a59');
+        $response = $admin->deleteDomain('225e58d1-367a-4337-af00-2acbc2307a59', false, false);
 
         $this->assertTrue($response);
     }
