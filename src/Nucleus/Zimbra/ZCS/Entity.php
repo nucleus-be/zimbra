@@ -229,10 +229,12 @@ abstract class Entity
     /**
      * Setter for the ID property
      * @param string $id
+     * @return \Zimbra\ZCS\Entity
      */
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**

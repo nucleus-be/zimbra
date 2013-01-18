@@ -48,6 +48,182 @@ class Domain
     }
 
     /**
+     * Fetches a list of all domain aliasses defined in the system
+     * Note that in order to properly link an alias to a domain the zimbraDomainAliasTargetId
+     * property must be set in zimbra, else there is no failsafe way of determining what aliasses
+     * belong to what domain
+     *
+     * @return array
+     */
+    public function getAllDomainAliasses()
+    {
+        $attributes = array(
+            'applyCos' => 1,
+            'types' => 'domains'
+        );
+        $params = array(
+            'query' => '(zimbraDomainType=alias)'
+        );
+
+        $response = $this->soapClient->request('SearchDirectoryRequest', $attributes, $params);
+        $aliasList = $response->children()->SearchDirectoryResponse->children();
+
+        $results = array();
+        foreach ($aliasList as $aliasXml) {
+            /** @var $alias \Zimbra\ZCS\Entity\Domain\Alias */
+            $alias = \Zimbra\ZCS\Entity\Domain\Alias::createFromXml($aliasXml);
+            $targetId = $alias->getTargetid();
+            if(!$targetId){
+                // Todo: log that we have an alias without target id
+                continue;
+            }
+            $domainEntity = $this->getDomain($targetId);
+            $alias->setTargetname($domainEntity->getName());
+            $results[] = $alias;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get all aliasses for a given domain which is identified by it's Zimbra ID
+     * @param string|\Zimbra\ZCS\Entity\Domain $domain The zimbra id of the domain you are retrieving aliasses for or an instance of the Domain Entity
+     * @throws \InvalidArgumentException
+     * @return array
+     */
+    public function getDomainAliasses($domain)
+    {
+        if($domain instanceof \Zimbra\ZCS\Entity\Domain){
+            $domain_id = $domain->getId();
+        } elseif(is_string($domain)) {
+            $domain_id = $domain;
+        } else {
+            throw new \InvalidArgumentException(__METHOD__ . ' only accepts the ID of a domain or a Domain Entity');
+        }
+
+        $attributes = array(
+            'applyCos' => 1,
+            'types' => 'domains'
+        );
+        $params = array(
+            'query' => sprintf('(&amp;(zimbraDomainType=alias)(zimbraDomainAliasTargetId=%s))', $domain_id)
+        );
+
+        $response = $this->soapClient->request('SearchDirectoryRequest', $attributes, $params);
+        $aliasList = $response->children()->SearchDirectoryResponse->children();
+
+        $results = array();
+        foreach ($aliasList as $aliasXml) {
+            /** @var $alias \Zimbra\ZCS\Entity\Domain\Alias */
+            $alias = \Zimbra\ZCS\Entity\Domain\Alias::createFromXml($aliasXml);
+            $targetId = $alias->getTargetid();
+            if(!$targetId){
+                // Todo: log that we have an alias without target id
+                continue;
+            }
+            $domainEntity = $this->getDomain($targetId);
+            $alias->setTargetname($domainEntity->getName());
+            $results[] = $alias;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Creates a new DomainAlias with name $alias for a given domain
+     * @param string|\Zimbra\ZCS\Entity\Domain $domain
+     * @param string                           $alias
+     * @param null|string                      $description Optionally a description for the item in Zimbra
+     * @return \Zimbra\ZCS\Entity\Domain\Alias
+     */
+    public function createDomainAlias($domain, $alias, $description = null)
+    {
+        if(is_string($domain)) {
+            $domain = $this->getDomain($domain);
+        }
+
+        $properties = array(
+            'name'       => $alias,
+            'attributes' => array(
+                'zimbraDomainType' => 'alias',
+                'zimbraMailCatchAllForwardingAddress' => "@".$domain->getName(),
+                'zimbraMailCatchAllAddress' => "@".$domain->getName(),
+                'zimbraDomainAliasTargetId' => $domain->getId(),
+                'description' => $description ?: 'domain alias of ' . $domain->getName()
+            )
+        );
+
+        $response = $this->soapClient->request('CreateDomainRequest', array(), $properties);
+        $domainXmlResponse = $response->children()->CreateDomainResponse->children();
+
+        $alias = \Zimbra\ZCS\Entity\Domain\Alias::createFromXml($domainXmlResponse[0]);
+        $alias->setTargetname($domain->getName());
+
+        return $alias;
+    }
+
+    /**
+     * Removes a domain alias from the ZCS webservice
+     * @param string|\Zimbra\ZCS\Entity\Domain\Alias $domainAlias
+     * @return bool
+     */
+    public function deleteDomainAlias($domainAlias)
+    {
+        return $this->deleteDomain($domainAlias, false, false);
+    }
+
+    /**
+     * Removes all aliasses from a domain
+     * @param string|\Zimbra\ZCS\Entity\Domain\Alias $domain
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
+    public function deleteAllDomainAliasses($domain)
+    {
+        if($domain instanceof \Zimbra\ZCS\Entity\Domain){
+            $domain_id = $domain->getId();
+        } elseif(is_string($domain)) {
+            $domain_id = $domain;
+            $domain = $this->getDomain($domain_id);
+        } else {
+            throw new \InvalidArgumentException(__METHOD__ . ' only accepts the ID of a domain or a Domain Entity');
+        }
+
+        $aliasses = $this->getDomainAliasses($domain);
+        foreach($aliasses as $alias){
+            $this->deleteDomainAlias($alias);
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes all accounts from a domain
+     * @param string|\Zimbra\ZCS\Entity\Domain\Alias $domain
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
+    public function deleteAllDomainAccounts($domain)
+    {
+        if($domain instanceof \Zimbra\ZCS\Entity\Domain){
+            $domain_id = $domain->getId();
+        } elseif(is_string($domain)) {
+            $domain_id = $domain;
+            $domain = $this->getDomain($domain_id);
+        } else {
+            throw new \InvalidArgumentException(__METHOD__ . ' only accepts the ID of a domain or a Domain Entity');
+        }
+
+        $accountAdmin = new \Zimbra\ZCS\Admin\Account($this->getSoapClient());
+        $accounts = $accountAdmin->getAccountListByDomain($domain->getName());
+        foreach($accounts as $account) {
+            $accountAdmin->deleteAccount($account->getId());
+        }
+
+        return true;
+    }
+
+    /**
      * Creates a domain in the ZCS soap webservice
      * @param \Zimbra\ZCS\Entity\Domain $domain
      * @return \Zimbra\ZCS\Entity
@@ -103,14 +279,36 @@ class Domain
 
     /**
      * Removes a domain from the ZCS webservice
-     * @param string $domain_id
+     * @warning This method is also used to delete Domain aliasses since in Zimbra a domain alias is just a Domain of a different type
+     * @see \Zimbra\ZCS\Admin\Domain::deleteDomainAlias
+     * @param                                  $domain
+     * @param bool                             $deleteAliasses
+     * @param bool                             $deleteAccounts
+     * @throws \InvalidArgumentException
      * @return bool
      */
-    public function deleteDomain($domain_id)
+    public function deleteDomain($domain, $deleteAliasses = true, $deleteAccounts = false)
     {
-        $attributes = array();
+        if($domain instanceof \Zimbra\ZCS\Entity){
+            $domain_id = $domain->getId();
+        } elseif(is_string($domain)) {
+            $domain_id = $domain;
+            $domain = $this->getDomain($domain_id);
+        } else {
+            throw new \InvalidArgumentException(__METHOD__ . ' only accepts the ID of a domain or a Domain Entity');
+        }
 
-        $response = $this->soapClient->request('DeleteDomainRequest', $attributes, array(
+        // Remove all accounts from a domain
+        if($deleteAccounts == true){
+            $this->deleteAllDomainAccounts($domain);
+        }
+
+        // Remove all aliasses from a domain
+        if($deleteAliasses == true) {
+            $this->deleteAllDomainAliasses($domain);
+        }
+
+        $response = $this->soapClient->request('DeleteDomainRequest', array(), array(
             'id' => $domain_id
         ));
 

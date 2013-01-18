@@ -86,6 +86,41 @@ class Account
     }
 
     /**
+     * Searches the whole account directory for a matching account. Searches on mail address
+     * and aliasses. You can 
+     * @param string $query The search query
+     * @param string $domain Limit the search to this domain
+     * @param boolean $ldapFilter Use the $query param as a full LDAP filter, when this is false (default)
+     *                            the $query is used as the matching part for a filter on the mail attribute
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function searchAccountList($query = '', $domain = false, $ldapFilter = false)
+    {
+        $attributes = array(
+            'applyCos' => 1,
+            'types' => 'accounts'
+        );
+        if($domain !== false){
+            $attributes['domain'] = $domain;
+        }
+
+        $query = $ldapFilter ? $query : 'mail='.$query.'';
+        $params = array(
+            'query' => htmlspecialchars($query, ENT_QUOTES) 
+        );
+
+        $response = $this->soapClient->request('SearchDirectoryRequest', $attributes, $params);
+        $accountList = $response->children()->SearchDirectoryResponse->children();
+
+        $results = array();
+        foreach ($accountList as $account) {
+            $results[] = \Zimbra\ZCS\Entity\Account::createFromXml($account);
+        }
+
+        return $results;
+    }
+
+    /**
      * Creates a new account in the ZCS soap webservice
      * @param \Zimbra\ZCS\Entity\Account $account
      * @return \Zimbra\ZCS\Entity
@@ -133,7 +168,6 @@ class Account
         unset($propertyArray['zimbraId']);
         unset($propertyArray['@name']);
         unset($propertyArray['uid']);
-        unset($propertyArray['userPassword']);
         unset($propertyArray['zimbraMailHost']);
 
         $properties = array(
@@ -150,17 +184,18 @@ class Account
     /**
      * Returns the usage limit and current usage for an account identified
      * by the $account_id parameter
-     * @param $account_id
+     * @param string $account_id
      * @return array
      */
-    public function getAccountQuotaUsage($account_id)
+    public function getAccountQuotaUsage($account_id = false)
     {
         // Get the account to see if it exists, if not
         // an exception will be thrown
         $account = $this->getAccount($account_id);
+        $domain = $account->getDomain();
 
         // Fetch the quota usage
-        $response = $this->soapClient->request('GetQuotaUsageRequest');
+        $response = $this->soapClient->request('GetQuotaUsageRequest', array('domain' => $domain));
         $xpathQuery = sprintf("//*[local-name()='account' and @id='%s']", $account_id);
         $record = $response->xpath($xpathQuery);
 
@@ -168,6 +203,56 @@ class Account
             'limit' => (int)$record[0]['limit'],
             'used'  => (int)$record[0]['used']
         );
+    }
+
+    /**
+     * Returns the usage limit and current usage for all accounts in a domain
+     * @param string $domain The string repretenstation of the domain, not the actual domainId!!
+     * @return array
+     */
+    public function getAllAccountQuotaUsage()
+    {
+        // Fetch the quota usage
+        $response = $this->soapClient->request('GetQuotaUsageRequest');
+
+        // Format and respond
+        return $this->_formatQuotaResponse($response);
+    }
+
+    /**
+     * Returns the usage limit and current usage for all accounts in a domain
+     * @param string $domain The string repretenstation of the domain, not the actual domainId!!
+     * @return array
+     */
+    public function getAccountQuotaUsageByDomain($domain)
+    {
+        $attributes = array(
+            'domain' => $domain
+        );
+
+        // Fetch the quota usage
+        $response = $this->soapClient->request('GetQuotaUsageRequest', $attributes);
+
+        // Format and respond
+        return $this->_formatQuotaResponse($response);
+    }
+
+    /**
+     * Formats a response with multiple accounts' quota details into an array
+     * @param  SimpleXMLElement $response The XML response from the server
+     * @return array
+     */ 
+    private function _formatQuotaResponse($response)
+    {
+        $data = array();
+        foreach($response->children()->children() as $account) {
+            $attributes = ($account->attributes());
+            $data[(string)$attributes['id']] = array(
+                'limit' => (int)$attributes['limit'],
+                'used' => (int)$attributes['used']
+            );
+        }
+        return $data;
     }
 
     /**

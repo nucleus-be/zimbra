@@ -65,7 +65,7 @@ class Account extends \Zimbra\ZCS\Entity
     private $password;
 
     /**
-     * The host for the account AKA domain
+     * The server where this account is hosted
      * @property
      * @var string
      */
@@ -310,7 +310,7 @@ class Account extends \Zimbra\ZCS\Entity
      */
     public function setMobileSync($mobilesync)
     {
-        $value = (in_array($mobilesync, array('false', 0, false))) ? false : true;
+        $value = in_array($mobilesync, array('FALSE', 'false', 0, false), true) ? false : true;
 
         $this->mobilesync = $value;
         return $this;
@@ -322,5 +322,15 @@ class Account extends \Zimbra\ZCS\Entity
     public function getMobilesync()
     {
         return $this->mobilesync;
+    }
+
+    /**
+     * Retrieves the domain part of the emailaddres from the name attributes of this account
+     * @return string the FQDN of the emailadres of this account
+     */
+    public function getDomain()
+    {
+        $data = explode('@', $this->getName());
+        return array_pop($data);
     }
 }
