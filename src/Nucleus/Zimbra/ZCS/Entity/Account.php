@@ -80,6 +80,28 @@ class Account extends \Zimbra\ZCS\Entity
     private $mobilesync;
 
     /**
+     * Force password change at next login
+     * Set to 'TRUE' to enable (uppercase!)
+     * @property
+     * @var string
+     */
+    private $forcepwchange;
+
+    /**
+     * First name
+     * @property
+     * @var string
+     */
+    private $firstname;
+
+    /**
+     * Last name
+     * @property
+     * @var string
+     */
+    private $lastname;
+
+    /**
      * Extra field mapping
      * @var array
      */
@@ -92,7 +114,10 @@ class Account extends \Zimbra\ZCS\Entity
         'zimbraCOSId'                    => 'cosid',
         'zimbraAccountStatus'            => 'accountstatus',
         'zimbraMailQuota'                => 'mailquota',
-        'zimbraFeatureMobileSyncEnabled' => 'mobilesync'
+        'zimbraFeatureMobileSyncEnabled' => 'mobilesync',
+        'zimbraPasswordMustChange'       => 'forcepwchange',
+        'givenName'                      => 'firstname',
+        'sn'                             => 'lastname'
     );
 
     /**
@@ -332,5 +357,61 @@ class Account extends \Zimbra\ZCS\Entity
     {
         $data = explode('@', $this->getName());
         return array_pop($data);
+    }
+
+    /**
+     * @param mixed $forcepwchange
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function setForcePwChange($forcepwchange)
+    {
+        $value = in_array($forcepwchange, array('FALSE', 'false', 0, false), true) ? false : true;
+
+        $this->forcepwchange = $value;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForcePwChange()
+    {
+        return $this->forcepwchange;
+    }
+
+    /**
+     * @param string $firstname
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function setFirstName($firstname)
+    {
+        $this->firstname = $firstname;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * @param string $lastname
+     * @return \Zimbra\ZCS\Entity\Account
+     */
+    public function setLastName($lastname)
+    {
+        $this->lastname = $lastname;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastname;
     }
 }
