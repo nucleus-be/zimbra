@@ -16,12 +16,12 @@ class Account
      * @param string $account
      * @return \Zimbra\ZCS\Entity\Account
      */
-    public function getAccount($account)
+    public function getAccount($account, $by = 'id')
     {
         $params = array(
             'account' => array(
                 '_'  => $account,
-                'by' => 'id',
+                'by' => $by,
             )
         );
 
