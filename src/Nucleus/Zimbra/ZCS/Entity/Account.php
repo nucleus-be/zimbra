@@ -81,9 +81,8 @@ class Account extends \Zimbra\ZCS\Entity
 
     /**
      * Force password change at next login
-     * Set to 'TRUE' to enable (uppercase!)
      * @property
-     * @var string
+     * @var bool
      */
     private $forcepwchange;
 
@@ -372,7 +371,7 @@ class Account extends \Zimbra\ZCS\Entity
     }
 
     /**
-     * @return string
+     * @return bool
      */
     public function getForcePwChange()
     {
