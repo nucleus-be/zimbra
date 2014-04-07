@@ -193,7 +193,8 @@ class SoapClient
         }
 
         $this->getCurlClient()->setOption(CURLOPT_POSTFIELDS, $this->getXml());
-        return $this->handleResponse($this->getCurlClient()->execute());
+        $reply = $this->getCurlClient()->execute();
+        return $this->handleResponse($reply);
     }
 
     /**

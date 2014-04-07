@@ -18,7 +18,7 @@ class Domain extends \Zimbra\ZCS\Entity
     /**
      * The Zimbra ID of the default COS for this Domain
      * @property
-     * @var string
+     * @var integer
      */
     private $defaultCosId = null;
 
@@ -35,6 +35,41 @@ class Domain extends \Zimbra\ZCS\Entity
      * @var string
      */
     private $domainStatus = null;
+    
+    /**
+     * The domain quota (in MB)
+     * @property
+     * @var integer
+     */
+    private $domainQuota = null;
+    
+    /**
+     * The domain aggregate quota (in MB)
+     * @property
+     * @var integer
+     */
+    private $domainAggregateQuota = null;
+    
+    /**
+     * The domain aggregate quota policy (ALLOWSENDRECEIVE or BLOCKSENDRECEIVE or BLOCKSEND)
+     * @property
+     * @var string
+     */
+    private $domainAggregateQuotaPolicy = null;
+    
+    /**
+     * The domain aggregate quota warn percent (e.g. 90)
+     * @property
+     * @var integer
+     */
+    private $domainAggregateQuotaWarnPercent = null;
+    
+    /**
+     * The domain aggregate quota warn recipient (email address)
+     * @property
+     * @var string
+     */
+    private $domainAggregateQuotaWarnEmailRecipient = null;
 
     /**
      * Validation for the properties of this Entity
@@ -79,7 +114,12 @@ class Domain extends \Zimbra\ZCS\Entity
     protected static $_datamap = array(
         'zimbraDomainDefaultCOSId' => 'defaultCosId',
         'zimbraDomainName' => 'name',
-        'zimbraDomainStatus' => 'domainStatus'
+        'zimbraDomainStatus' => 'domainStatus',
+        'zimbraMailDomainQuota' => 'domainQuota',
+        'zimbraDomainAggregateQuota' => 'domainAggregateQuota',
+        'zimbraDomainAggregateQuotaPolicy' => 'domainAggregateQuotaPolicy',
+        'zimbraDomainAggregateQuotaWarnPercent' => 'domainAggregateQuotaWarnPercent',
+        'zimbraDomainAggregateQuotaWarnEmailRecipient' => 'domainAggregateQuotaWarnEmailRecipient'
     );
 
     public function setDefaultCosId($defaultCosId)
@@ -115,4 +155,58 @@ class Domain extends \Zimbra\ZCS\Entity
         return $this->domainStatus;
     }
 
+    public function setDomainQuota($v)
+    {
+        $this->domainQuota = $v;
+        return $this;
+    }
+
+    public function getDomainQuota()
+    {
+        return $this->domainQuota;
+    }
+    
+    public function setDomainAggregateQuota($v)
+    {
+        $this->domainAggregateQuota = $v;
+        return $this;
+    }
+
+    public function getDomainAggregateQuota()
+    {
+        return $this->domainAggregateQuota;
+    }
+    
+    public function setDomainAggregateQuotaPolicy($v)
+    {
+        $this->domainAggregateQuotaPolicy = $v;
+        return $this;
+    }
+
+    public function getDomainAggregateQuotaPolicy()
+    {
+        return $this->domainAggregateQuotaPolicy;
+    }
+    
+    public function setDomainAggregateQuotaWarnPercent($v)
+    {
+        $this->domainAggregateQuotaWarnPercent = $v;
+        return $this;
+    }
+
+    public function getDomainAggregateQuotaWarnPercent()
+    {
+        return $this->domainAggregateQuotaWarnPercent;
+    }
+    
+    public function setDomainAggregateQuotaWarnEmailRecipient($v)
+    {
+        $this->domainAggregateQuotaWarnEmailRecipient = $v;
+        return $this;
+    }
+
+    public function getDomainAggregateQuotaWarnEmailRecipient()
+    {
+        return $this->domainAggregateQuotaWarnEmailRecipient;
+    }
 }
