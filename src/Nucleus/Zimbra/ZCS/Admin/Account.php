@@ -170,6 +170,11 @@ class Account
         unset($propertyArray['uid']);
         unset($propertyArray['zimbraMailHost']);
 
+        // Do not set surname if it's empty, causes errors in Zimbra
+        if (!$propertyArray['sn']) {
+            unset($propertyArray['sn']);
+        }
+
         $properties = array(
             'id'         => $id,
             'attributes' => $propertyArray
