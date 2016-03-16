@@ -70,6 +70,41 @@ class Domain extends \Zimbra\ZCS\Entity
      * @var string
      */
     private $domainAggregateQuotaWarnEmailRecipient = null;
+    
+    /**
+     * The DKIM domain
+     * @property
+     * @var string
+     */
+    private $DKIMDomain = null;
+    
+    /**
+     * The DKIM identity (usually domain name)
+     * @property
+     * @var string
+     */
+    private $DKIMIdentity = null;
+    
+    /**
+     * The DKIM private key
+     * @property
+     * @var string
+     */
+    private $DKIMKey = null;
+    
+    /**
+     * The DKIM public key
+     * @property
+     * @var string
+     */
+    private $DKIMPublicKey = null;
+    
+    /**
+     * The DKIM selector
+     * @property
+     * @var string
+     */
+    private $DKIMSelector = null;
 
     /**
      * Validation for the properties of this Entity
@@ -119,7 +154,12 @@ class Domain extends \Zimbra\ZCS\Entity
         'zimbraDomainAggregateQuota' => 'domainAggregateQuota',
         'zimbraDomainAggregateQuotaPolicy' => 'domainAggregateQuotaPolicy',
         'zimbraDomainAggregateQuotaWarnPercent' => 'domainAggregateQuotaWarnPercent',
-        'zimbraDomainAggregateQuotaWarnEmailRecipient' => 'domainAggregateQuotaWarnEmailRecipient'
+        'zimbraDomainAggregateQuotaWarnEmailRecipient' => 'domainAggregateQuotaWarnEmailRecipient',
+        'DKIMDomain' => 'DKIMDomain',
+        'DKIMIdentity' => 'DKIMIdentity',
+        'DKIMKey' => 'DKIMKey',
+        'DKIMPublicKey' => 'DKIMPublicKey',
+        'DKIMSelector' => 'DKIMSelector',
     );
 
     public function setDefaultCosId($defaultCosId)
@@ -208,5 +248,60 @@ class Domain extends \Zimbra\ZCS\Entity
     public function getDomainAggregateQuotaWarnEmailRecipient()
     {
         return $this->domainAggregateQuotaWarnEmailRecipient;
+    }
+    
+    public function setDKIMDomain($v)
+    {
+        $this->DKIMDomain = $v;
+        return $this;
+    }
+
+    public function getDKIMDomain()
+    {
+        return $this->DKIMDomain;
+    }
+    
+    public function setDKIMIdentity($v)
+    {
+        $this->DKIMIdentity = $v;
+        return $this;
+    }
+
+    public function getDKIMIdentity()
+    {
+        return $this->DKIMIdentity;
+    }
+    
+    public function setDKIMKey($v)
+    {
+        $this->DKIMKey = $v;
+        return $this;
+    }
+
+    public function getDKIMKey()
+    {
+        return $this->DKIMKey;
+    }
+    
+    public function setDKIMPublicKey($v)
+    {
+        $this->DKIMPublicKey = $v;
+        return $this;
+    }
+
+    public function getDKIMPublicKey()
+    {
+        return $this->DKIMPublicKey;
+    }
+    
+    public function setDKIMSelector($v)
+    {
+        $this->DKIMSelector = $v;
+        return $this;
+    }
+
+    public function getDKIMSelector()
+    {
+        return $this->DKIMSelector;
     }
 }
