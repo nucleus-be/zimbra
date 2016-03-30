@@ -174,6 +174,16 @@ class Account
         if (!$propertyArray['sn']) {
             unset($propertyArray['sn']);
         }
+        
+        // Do not set surname if it's empty, causes errors in Zimbra
+        if (!$propertyArray['sn']) {
+            unset($propertyArray['sn']);
+        }
+        
+        // Do not reset the password to VALUE-BLOCKED (what you get with getAccount())
+        if (!$propertyArray['password'] === 'VALUE-BLOCKED') {
+            unset($propertyArray['password']);
+        }
 
         $properties = array(
             'id'         => $id,
