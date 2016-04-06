@@ -181,7 +181,7 @@ class Account
         }
         
         // Do not reset the password to VALUE-BLOCKED (what you get with getAccount())
-        if (!$propertyArray['password'] === 'VALUE-BLOCKED') {
+        if (array_key_exists('password', $propertyArray) && $propertyArray['password'] === 'VALUE-BLOCKED') {
             unset($propertyArray['password']);
         }
 
