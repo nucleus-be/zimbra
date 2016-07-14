@@ -170,19 +170,20 @@ class Account
         unset($propertyArray['uid']);
         unset($propertyArray['zimbraMailHost']);
 
-        // Do not set surname if it's empty, causes errors in Zimbra
-        if (!$propertyArray['sn']) {
-            unset($propertyArray['sn']);
+        // Do not set given name if it's empty, causes errors in Zimbra
+        if (!$propertyArray['givenName']) {
+            unset($propertyArray['givenName']);
         }
-        
+
         // Do not set surname if it's empty, causes errors in Zimbra
         if (!$propertyArray['sn']) {
             unset($propertyArray['sn']);
         }
         
         // Do not reset the password to VALUE-BLOCKED (what you get with getAccount())
-        if (array_key_exists('password', $propertyArray) && $propertyArray['password'] === 'VALUE-BLOCKED') {
-            unset($propertyArray['password']);
+        if (array_key_exists('userPassword', $propertyArray) && $propertyArray['userPassword'] === 'VALUE-BLOCKED') {
+            unset($propertyArray['userPassword']);
+            $propertyArray['zimbraPasswordMustChange'] = false;
         }
 
         $properties = array(
