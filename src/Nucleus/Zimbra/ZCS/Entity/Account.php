@@ -134,9 +134,9 @@ class Account extends \Zimbra\ZCS\Entity
         $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
             'groups' => array('create')
         )));
-        $metadata->addPropertyConstraint('name', new Assert\MaxLength(array(
+        $metadata->addPropertyConstraint('name', new Assert\Length(array(
             'groups' => array('create'),
-            'limit'  => 64
+            'max'  => 64
         )));
 
         // password should never be NULL or a blank string
@@ -146,15 +146,15 @@ class Account extends \Zimbra\ZCS\Entity
         $metadata->addPropertyConstraint('password', new Assert\NotBlank(array(
             'groups' => array('create')
         )));
-        $metadata->addPropertyConstraint('password', new Assert\MinLength(array(
+        $metadata->addPropertyConstraint('password', new Assert\Length(array(
             'groups' => array('create', 'update'),
-            'limit'  => 6
+            'min'  => 6
         )));
 
         // display name max length
-        $metadata->addPropertyConstraint('displayname', new Assert\MaxLength(array(
+        $metadata->addPropertyConstraint('displayname', new Assert\Length(array(
             'groups' => array('create', 'update'),
-            'limit' => 250
+            'max' => 250
         )));
 
         // mailquota numeric and > 0
@@ -162,9 +162,9 @@ class Account extends \Zimbra\ZCS\Entity
             'groups' => array('create', 'update'),
             'type' => 'integer'
         )));
-        $metadata->addPropertyConstraint('mailquota', new Assert\Min(array(
+        $metadata->addPropertyConstraint('mailquota', new Assert\GreaterThanOrEqual(array(
             'groups' => array('create', 'update'),
-            'limit' => 0
+            'value' => 0
         )));
 
         // Account status has fixed set of options and is required
