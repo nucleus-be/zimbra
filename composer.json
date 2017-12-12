@@ -15,8 +15,8 @@
         }
     ],
     "require": {
-        "php"               : ">=5.3.2",
-        "symfony/validator": "^2.0"
+        "php"               : ">=5.5",
+        "symfony/validator": "~3.3"
     },
     "require-dev": {
         "mockery/mockery"   : "dev-master"

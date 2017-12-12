@@ -115,24 +115,36 @@ class Domain extends \Zimbra\ZCS\Entity
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
         // Name should never be NULL or a blank string
-        $metadata->addPropertyConstraint('name', new Assert\NotNull(array(
-            'groups' => array('create')
-        )));
-        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
-            'groups' => array('create')
-        )));
+        $metadata->addPropertyConstraint(
+            'name',
+            new Assert\NotBlank(
+                [
+                    'groups' => ['create'],
+                ]
+            )
+        );
 
         // Domain status has fixed set of options and is required
-        $metadata->addPropertyConstraint('domainStatus', new Assert\Choice(array(
-            'groups' => array('create', 'update'),
-            'choices' => array('active', 'closed', 'locked', 'pending', 'maintenance')
-        )));
-        $metadata->addPropertyConstraint('domainStatus', new Assert\NotNull(array(
-            'groups' => array('create')
-        )));
+        $metadata->addPropertyConstraint(
+            'domainStatus',
+            new Assert\Choice(
+                [
+                    'groups'  => ['create', 'update'],
+                    'choices' => ['active', 'closed', 'locked', 'pending', 'maintenance'],
+                ]
+            )
+        );
+        $metadata->addPropertyConstraint(
+            'domainStatus',
+            new Assert\NotBlank(
+                [
+                    'groups' => ['create'],
+                ]
+            )
+        );
 
         // DefaultCosId should either be a non-blank string or NULL
-        $metadata->addConstraint(new Assert\Callback(array('_validateDefaultCosId')));
+        $metadata->addConstraint(new Assert\Callback(['callback' => [Domain::class, '_validateDefaultCosId']]));
     }
 
     public function _validateDefaultCosId(ExecutionContext $context)

@@ -39,7 +39,6 @@ class Cos extends \Zimbra\ZCS\Entity
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
         // Name should never be NULL or a blank string
-        $metadata->addPropertyConstraint('name', new Assert\NotNull());
         $metadata->addPropertyConstraint('name', new Assert\NotBlank());
     }
 
