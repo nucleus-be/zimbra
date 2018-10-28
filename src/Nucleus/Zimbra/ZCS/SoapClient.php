@@ -32,6 +32,16 @@ class SoapClient
     private $curlClient;
 
     /**
+     * @var null|string
+     */
+    private $username;
+
+    /**
+     * @var null|string
+     */
+    private $password;
+
+    /**
      * When true all XML will be outputted
      * @var bool
      */
@@ -59,6 +69,8 @@ class SoapClient
 
         // @codeCoverageIgnoreStart
         if($username && $password && $this->getCurlClient()){
+            $this->username = $username;
+            $this->password = $password;
             $this->auth($username, $password);
         }
         // @codeCoverageIgnoreEnd
@@ -194,14 +206,22 @@ class SoapClient
 
         $this->getCurlClient()->setOption(CURLOPT_POSTFIELDS, $this->getXml());
         $reply = $this->getCurlClient()->execute();
-        return $this->handleResponse($reply);
+        try {
+            return $this->handleResponse($reply);
+        } catch(Exception\AuthExpired $exception) {
+            // try to re-authenticate to refresh token
+            $this->auth($this->username, $this->password);
+            return $this->handleResponse($reply);
+        }
     }
 
     /**
      * Handles the response
      * @param string $soapMessage The response
-     * @throws Exception\Webservice
+     * @throws Exception\AuthExpired
+     * @throws Exception\EntityNotFound
      * @throws Exception\Soap
+     * @throws Exception\Webservice
      * @return \SimpleXMLElement The response XML <Body> tag
      */
     private function handleResponse($soapMessage)
@@ -272,6 +292,11 @@ class SoapClient
                 $exception = new \Zimbra\ZCS\Exception\EntityNotFound(
                     'Cos cannot be found',
                     \Zimbra\ZCS\Exception\EntityNotFound::ERR_COS_NOT_FOUND
+                );
+                break;
+            case 'service.AUTH_EXPIRED':
+                $exception = new \Zimbra\ZCS\Exception\AuthExpired(
+                    'Authentication token expired'
                 );
                 break;
             default:
