@@ -23,7 +23,7 @@
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-simplexml": "*",
-    "symfony/validator": "~3.3"
+    "symfony/validator": "~3.3|^4.0|^5.0"
   },
   "require-dev": {
     "mockery/mockery": "dev-master"
